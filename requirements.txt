@@ -1,0 +1,5 @@
+# Python version
+python>=3.8
+
+# Required packages
+pyvrp>=0.11.3
