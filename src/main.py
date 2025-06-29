@@ -7,58 +7,79 @@ This file is part of Route Seeker, a Python Program for solving Vehicle Routing 
 Distributed under the MIT License. See LICENSE for more information.
 """
 import argparse
+import concurrent.futures
 from read import read_instance
-from pyvrp import Model
-from pyvrp.plotting import (
-    plot_coordinates,
-    plot_instance,
-    plot_result,
-    plot_route_schedule,
-)
-from pyvrp.stop import MaxIterations, MaxRuntime
+from pyvrp import Model, Result, ProblemData
+from pyvrp.stop import MaxRuntime
+
+# 这是一个跨平台兼容的工作函数。
+# 通过显式传递instance_data，它可以在Windows(spawn)和Linux/macOS(fork)上可靠地工作。
+def solve_worker(instance_data: ProblemData, seed: int, runtime: int) -> Result:
+    """
+    单个CPU核心执行的工作函数。
+    它使用传入的实例数据创建一个模型，并用给定的随机种子进行求解。
+    """
+    model = Model.from_data(instance_data)
+    
+    # 在并行计算中，关闭每个核心的详细日志输出，避免信息混乱
+    result = model.solve(stop=MaxRuntime(runtime), seed=seed, display=True)
+    
+    cost = result.cost() if result.is_feasible() else "N/A"
+    print(f"  Core with seed {seed:2d} finished. Cost: {cost}")
+    return result
 
 
 if __name__ == "__main__":
-    # 1. 设置命令行参数解析器
+    # --- 参数解析部分保持不变 ---
     parser = argparse.ArgumentParser(
         description="Route Seeker: A VRPTW solver."
     )
-    
-    # 2. 添加必须的实例文件路径参数
     parser.add_argument(
-        "instance_path", 
-        type=str, 
-        help="Path to the instance file (e.g., data/C1_2_1.TXT)."
+        "instance_path", type=str, help="Path to the instance file."
     )
-    
-    # 3. 添加可选的运行时间参数，默认值为1800秒
     parser.add_argument(
-        "--runtime",
-        "-t",
-        type=int,
-        default=1800,
-        help="Maximum solver runtime in seconds. Default is 1800."
+        "--runtime", "-t", type=int, default=1800,
+        help="Maximum solver runtime in seconds PER CORE. Default is 1800."
     )
-    
-    # 解析传入的命令行参数
     args = parser.parse_args()
-
-    # 使用传入的参数读取实例和设置求解时间
-    INSTANCE = read_instance(
-        args.instance_path, 
-        instance_format="solomon", 
-        round_func="exact"
+    
+    # --- 主逻辑部分保持不变 ---
+    instance_data_main = read_instance(
+        args.instance_path, instance_format="solomon", round_func="exact"
     )
     
-    model = Model.from_data(INSTANCE)
+    NUM_CORES = 8
+    INIT_SEED = 42
+    print(f"Solving {args.instance_path} on {NUM_CORES} cores...")
+    print(f"Max runtime per core: {args.runtime} seconds.\n")
     
-    print(f"Solving {args.instance_path} with a max runtime of {args.runtime} seconds...")
+    all_results = []
     
-    result = model.solve(stop=MaxRuntime(args.runtime), seed=42, display=True)
-    
-    # 检查是否有可行解
-    if result.best.is_feasible():
-        distance = round(result.best.distance() / 1000, 2)
-        print(f"Found a solution with # vehicles: {result.best.num_routes()}, distance: {distance:.2f}.")
+    with concurrent.futures.ProcessPoolExecutor(max_workers=NUM_CORES) as executor:
+        seeds = [INIT_SEED + i for i in range(NUM_CORES)]
+        # 将数据作为参数传递，这是实现跨平台兼容的关键
+        futures = {
+            executor.submit(solve_worker, instance_data_main, seed, args.runtime): seed 
+            for seed in seeds
+        }
+        
+        for future in concurrent.futures.as_completed(futures):
+            try:
+                result = future.result()
+                all_results.append(result)
+            except Exception as exc:
+                print(f"A worker process generated an exception: {exc}")
+
+    feasible_results = [res for res in all_results if res.is_feasible()]
+
+    if not feasible_results:
+        print("\nNo feasible solution found by any core within the given time limit.")
     else:
-        print("No feasible solution found within the given time limit.")
+        best_result = min(feasible_results, key=lambda res: res.cost())
+        distance = round(best_result.best.distance() / 1000, 2)
+        
+        print("\n" + "="*50)
+        print("Best solution found across all cores:")
+        print(f"  - Number of vehicles: {best_result.best.num_routes()}")
+        print(f"  - Total distance: {distance:.2f}")
+        print("="*50)

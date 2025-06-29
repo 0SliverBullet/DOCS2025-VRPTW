@@ -179,7 +179,7 @@ class _InstanceParser:
         # <<< 新增：如果提供了覆盖值，则使用它；否则，使用旧逻辑
         if self._num_vehicles_override is not None:
             return self._num_vehicles_override
-            
+
         return self.instance.get("vehicles", self.num_locations - 1)
 
     def type(self) -> str:
@@ -315,7 +315,7 @@ class _InstanceParser:
         # Fixed costs are unrounded to prevent double scaling in the
         # total cost calculation (fixed_cost * num_vehicles).
         # Here, we assume that the fixed costs are the same for all vehicles.
-        fixed_costs = self.instance.get("vehicles_fixed_cost", 1000)
+        fixed_costs = self.instance.get("vehicles_fixed_cost", 10000)
         return self.round_func(np.broadcast_to(fixed_costs, self.num_vehicles))
 
     def unit_distance_costs(self) -> np.ndarray:
