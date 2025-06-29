@@ -58,6 +58,7 @@ def read_instance(
     where: str | pathlib.Path,
     instance_format: str = "vrplib",
     round_func: str | _RoundingFunc = "none",
+    num_vehicles: int | None = None,  # <<< 新增：添加一个可选参数来覆盖车辆数
 ) -> ProblemData:
     """
     Reads the ``VRPLIB`` file at the given location, and returns a
@@ -112,8 +113,13 @@ def read_instance(
             f"instance_format = {instance_format} is not understood. "
             "Can be one of ['vrplib', 'solomon']."
         )
-
-    parser = _InstanceParser(vrplib.read_instance(where, instance_format), instance_format, round_func)
+    # <<< 新增：将 num_vehicles 参数传递给解析器
+    parser = _InstanceParser(
+        vrplib.read_instance(where, instance_format), 
+        instance_format, 
+        round_func,
+        num_vehicles
+    )   
     builder = _ProblemDataBuilder(parser)
     return builder.data()
 
@@ -123,10 +129,11 @@ class _InstanceParser:
     processing.
     """
 
-    def __init__(self, instance: dict, instance_format, round_func: _RoundingFunc):
+    def __init__(self, instance: dict, instance_format, round_func: _RoundingFunc, num_vehicles: int | None = None):
         self.instance = instance
         self.instance_format = instance_format
         self.round_func = round_func
+        self._num_vehicles_override = num_vehicles # <<< 新增：存储覆盖值
 
     @property
     def num_locations(self) -> int:
@@ -169,6 +176,10 @@ class _InstanceParser:
 
     @property
     def num_vehicles(self) -> int:
+        # <<< 新增：如果提供了覆盖值，则使用它；否则，使用旧逻辑
+        if self._num_vehicles_override is not None:
+            return self._num_vehicles_override
+            
         return self.instance.get("vehicles", self.num_locations - 1)
 
     def type(self) -> str:
@@ -301,7 +312,10 @@ class _InstanceParser:
         return np.broadcast_to(max_reloads, self.num_vehicles)
 
     def fixed_costs(self) -> np.ndarray:
-        fixed_costs = self.instance.get("vehicles_fixed_cost", 0)
+        # Fixed costs are unrounded to prevent double scaling in the
+        # total cost calculation (fixed_cost * num_vehicles).
+        # Here, we assume that the fixed costs are the same for all vehicles.
+        fixed_costs = self.instance.get("vehicles_fixed_cost", 1000)
         return self.round_func(np.broadcast_to(fixed_costs, self.num_vehicles))
 
     def unit_distance_costs(self) -> np.ndarray:

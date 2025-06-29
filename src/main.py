@@ -1,9 +1,12 @@
-# Copyright (c) 2025, the Route Seeker developers.
-# Members of the Route Seeker developers include:
-# - Zubin Zheng <zhengzb2021@mail.sustech.edu.cn>
-# All rights reserved.
-# This file is part of Route Seeker, a Python Program for solving Vehicle Routing Problems with Time Windows.
-# Distributed under the MIT License. See LICENSE for more information.
+"""
+Copyright (c) 2025, the Route Seeker developers.
+Members of the Route Seeker developers include:
+- Zubin Zheng <zhengzb2021@mail.sustech.edu.cn>
+All rights reserved.
+This file is part of Route Seeker, a Python Program for solving Vehicle Routing Problems with Time Windows.
+Distributed under the MIT License. See LICENSE for more information.
+"""
+import argparse
 from read import read_instance
 from pyvrp import Model
 from pyvrp.plotting import (
@@ -16,8 +19,46 @@ from pyvrp.stop import MaxIterations, MaxRuntime
 
 
 if __name__ == "__main__":
-    INSTANCE = read_instance("data/homberger_200_customer_instances/C1_2_1.TXT", instance_format="solomon", round_func="dimacs")
+    # 1. 设置命令行参数解析器
+    parser = argparse.ArgumentParser(
+        description="Route Seeker: A VRPTW solver."
+    )
+    
+    # 2. 添加必须的实例文件路径参数
+    parser.add_argument(
+        "instance_path", 
+        type=str, 
+        help="Path to the instance file (e.g., data/C1_2_1.TXT)."
+    )
+    
+    # 3. 添加可选的运行时间参数，默认值为1800秒
+    parser.add_argument(
+        "--runtime",
+        "-t",
+        type=int,
+        default=1800,
+        help="Maximum solver runtime in seconds. Default is 1800."
+    )
+    
+    # 解析传入的命令行参数
+    args = parser.parse_args()
+
+    # 使用传入的参数读取实例和设置求解时间
+    INSTANCE = read_instance(
+        args.instance_path, 
+        instance_format="solomon", 
+        round_func="exact"
+    )
+    
     model = Model.from_data(INSTANCE)
-    result = model.solve(stop=MaxRuntime(30), seed=42, display=True)
-    cost = result.cost() / 10
-    print(f"Found a solution with cost: {cost}.")
+    
+    print(f"Solving {args.instance_path} with a max runtime of {args.runtime} seconds...")
+    
+    result = model.solve(stop=MaxRuntime(args.runtime), seed=42, display=True)
+    
+    # 检查是否有可行解
+    if result.best.is_feasible():
+        distance = round(result.best.distance() / 1000, 2)
+        print(f"Found a solution with # vehicles: {result.best.num_routes()}, distance: {distance:.2f}.")
+    else:
+        print("No feasible solution found within the given time limit.")
