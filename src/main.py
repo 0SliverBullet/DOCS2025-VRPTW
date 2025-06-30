@@ -6,10 +6,11 @@ All rights reserved.
 This file is part of Route Seeker, a Python Program for solving Vehicle Routing Problems with Time Windows.
 Distributed under the MIT License. See LICENSE for more information.
 """
-import argparse
 import concurrent.futures
+from cli_parser import parse_args
 from read import read_instance
-from pyvrp import Model, Result, ProblemData
+from pyvrp import Result, ProblemData
+from Model import Model
 from pyvrp.stop import MaxRuntime
 
 # 这是一个跨平台兼容的工作函数。
@@ -31,25 +32,17 @@ def solve_worker(instance_data: ProblemData, seed: int, runtime: int) -> Result:
 
 if __name__ == "__main__":
     # --- 参数解析部分保持不变 ---
-    parser = argparse.ArgumentParser(
-        description="Route Seeker: A VRPTW solver."
-    )
-    parser.add_argument(
-        "instance_path", type=str, help="Path to the instance file."
-    )
-    parser.add_argument(
-        "--runtime", "-t", type=int, default=1800,
-        help="Maximum solver runtime in seconds PER CORE. Default is 1800."
-    )
-    args = parser.parse_args()
+    args = parse_args()
     
     # --- 主逻辑部分保持不变 ---
     instance_data_main = read_instance(
         args.instance_path, instance_format="solomon", round_func="exact"
     )
+
+    # --- 这里的NUM_CORES和INIT_SEED是从命令行参数中获取的 ---
     
-    NUM_CORES = 8
-    INIT_SEED = 42
+    NUM_CORES = args.num_subproblems
+    INIT_SEED = args.seed
     print(f"Solving {args.instance_path} on {NUM_CORES} cores...")
     print(f"Max runtime per core: {args.runtime} seconds.\n")
     
@@ -82,4 +75,5 @@ if __name__ == "__main__":
         print("Best solution found across all cores:")
         print(f"  - Number of vehicles: {best_result.best.num_routes()}")
         print(f"  - Total distance: {distance:.2f}")
+        # print(f"  - Route visits: {best_result.best.routes()[0].visits()}")
         print("="*50)

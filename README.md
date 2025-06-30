@@ -60,6 +60,23 @@ Note: time in seconds.
 
 
 
+- Improved Results: []
+
+|                           Instance                           | Vehicles (Ours) | Distance (Ours) | Time (Ours) |
+| :----------------------------------------------------------: | :-------------: | :-------------: | :---------: |
+| [c1_2_1](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_1.txt) |                 |                 |             |
+| [c1_2_2](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_2.18_2917.89.txt) |                 |                 |             |
+| [c1_2_3](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |             |
+| [c1_2_4](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |             |
+| [c1_2_5](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_5.txt) |                 |                 |             |
+|                            c1_8_1                            |                 |                 |             |
+| [c1_8_2](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_2-72-26540.53.txt) |                 |                 |             |
+| [c1_8_3](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_3.72_24242.49.txt) |                 |                 |             |
+| [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |                 |                 |             |
+| [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |                 |                 |             |
+
+
+
 ## Environments
 
 - Operating System: Windows 10
