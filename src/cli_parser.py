@@ -24,6 +24,24 @@ def parse_args():
         help="Total solver runtime in seconds. Default is 1800."
     )
 
+    # 可选参数：运行次数
+    parser.add_argument(
+        "--runs",
+        "-r",
+        type=int,
+        default=1,
+        help="Number of times to run the solver. Default is 1."
+    )
+
+    # 可选参数：CPU核心数量
+    parser.add_argument(    
+        "--num_cores",
+        "-c",
+        type=int,
+        default=8,
+        help="Number of CPU cores to use for parallel processing. Default is 8."
+    )
+
     # 可选参数：子问题数量
     parser.add_argument(
         "--num_subproblems",
@@ -60,5 +78,6 @@ def parse_args():
         default=42,
         help="Random seed for all operations."
     )
+
 
     return parser.parse_args()

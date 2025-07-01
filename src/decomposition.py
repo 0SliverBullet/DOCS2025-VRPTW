@@ -1,6 +1,10 @@
 import numpy as np
+import os
 from sklearn.cluster import KMeans
 from pyvrp import ProblemData, Solution, VehicleType
+
+# 设置环境变量解决KMeans内存泄漏警告
+os.environ['OMP_NUM_THREADS'] = '1'
 
 def barycenter_clustering_decomposition(
     elite_solution: Solution,
@@ -24,7 +28,7 @@ def barycenter_clustering_decomposition(
     """
 
     # 1. 计算每条非空路线的质心及其客户数量
-    routes = [route for route in elite_solution.routes() if not route.is_empty()]
+    routes = [route for route in elite_solution.routes()]
     if not routes:
         return []
 
@@ -57,7 +61,8 @@ def barycenter_clustering_decomposition(
     # --- 新增逻辑：聚类均衡化 ---
     if max_customers_per_cluster is not None:
         print("Balancing clusters...")
-        cluster_customer_counts = [sum(route_customer_counts[route_idx] for route_idx in group) for group in route_groups]
+        # 修复：确保cluster_customer_counts是整数列表，而不是numpy数组
+        cluster_customer_counts = [int(sum(route_customer_counts[route_idx] for route_idx in group)) for group in route_groups]
 
         # <<< 变化1：将K-means的簇中心复制一份，以便后续动态更新 >>>
         current_cluster_centers = kmeans.cluster_centers_.copy()
@@ -74,7 +79,8 @@ def barycenter_clustering_decomposition(
                 print("Clusters are balanced.")
                 break 
 
-            overloaded_idx = max(overloaded_clusters, key=lambda item: item[1])[0]
+            # 修复：确保key返回的是可比较的整数类型
+            overloaded_idx = max(overloaded_clusters, key=lambda item: int(item[1]))[0]
             
             # <<< 变化2：使用动态更新的簇中心进行计算 >>>
             cluster_center = current_cluster_centers[overloaded_idx]
@@ -107,7 +113,7 @@ def barycenter_clustering_decomposition(
             route_groups[best_new_cluster_global_idx].append(route_to_move_global_idx)
             
             # 更新两个受影响簇的客户总数
-            moved_customers_count = route_customer_counts[route_to_move_global_idx]
+            moved_customers_count = int(route_customer_counts[route_to_move_global_idx])
             cluster_customer_counts[overloaded_idx] -= moved_customers_count
             cluster_customer_counts[best_new_cluster_global_idx] += moved_customers_count
             
@@ -123,11 +129,16 @@ def barycenter_clustering_decomposition(
         else: 
             print(f"Warning: Balancing reached max iterations ({MAX_BALANCE_ITERATIONS}) but may not be perfect.")
 
-    # 5. 为每个路线分组创建子问题 (与之前逻辑相同)
+    # 5. 为每个路线分组创建子问题
     subproblems = []
     og_clients = original_data.clients()
     og_depots = original_data.depots()
-    client_loc_map = {client: loc_idx for loc_idx, client in enumerate(og_clients, original_data.num_depots)}
+    
+    # 修复：创建client索引到location索引的映射，使用位置索引而不是id
+    # 客户端在location列表中的索引从num_depots开始
+    client_to_loc_map = {}
+    for client_idx, client in enumerate(og_clients):
+        client_to_loc_map[client_idx] = client_idx + original_data.num_depots
 
     # 将路线索引转换回路线对象
     final_route_groups = [[routes[idx] for idx in group] for group in route_groups]
@@ -136,46 +147,58 @@ def barycenter_clustering_decomposition(
         if not group:
             continue
             
-        sub_client_locs = set()
-        sub_depot_locs = set()
+        # 修复：使用列表而不是集合来避免unhashable类型错误
+        sub_client_locs = []
+        sub_depot_locs = []
         
         for route in group:
-            for client in route.visits():
-                sub_client_locs.add(client_loc_map[client])
-            sub_depot_locs.add(route.start_depot())
-            sub_depot_locs.add(route.end_depot())
+            for client_loc_idx in route.visits():
+                # client_loc_idx已经是location索引，直接使用
+                if client_loc_idx not in sub_client_locs:
+                    sub_client_locs.append(client_loc_idx)
+            
+            start_depot_idx = route.start_depot()
+            end_depot_idx = route.end_depot()
+            if start_depot_idx not in sub_depot_locs:
+                sub_depot_locs.append(start_depot_idx)
+            if end_depot_idx not in sub_depot_locs:
+                sub_depot_locs.append(end_depot_idx)
 
         if not sub_client_locs:
             continue
 
-        all_loc_indices = sorted(list(sub_depot_locs)) + sorted(list(sub_client_locs))
+        all_loc_indices = sorted(sub_depot_locs) + sorted(sub_client_locs)
         old_to_new_map = {old_idx: new_idx for new_idx, old_idx in enumerate(all_loc_indices)}
 
         num_sub_locs = len(all_loc_indices)
-        sub_depots = [og_depots[loc_idx] for loc_idx in sorted(list(sub_depot_locs))]
-        sub_clients = [og_clients[loc_idx - len(og_depots)] for loc_idx in sorted(list(sub_client_locs))]
+        sub_depots = [og_depots[loc_idx] for loc_idx in sorted(sub_depot_locs)]
+        sub_clients = [og_clients[loc_idx - len(og_depots)] for loc_idx in sorted(sub_client_locs)]
         
         first_route_type_idx = group[0].vehicle_type()
         og_veh_type = original_data.vehicle_type(first_route_type_idx)
         sub_veh_type = VehicleType(num_available=len(group), capacity=og_veh_type.capacity)
         
-        sub_dist_mat = np.zeros((num_sub_locs, num_sub_locs), dtype=int)
-        sub_dur_mat = np.zeros((num_sub_locs, num_sub_locs), dtype=int)
-        
+        # 修复：获取原始矩阵并创建子矩阵，使用与原始数据相同的dtype
         og_dist_mat = original_data.distance_matrix(profile=og_veh_type.profile)
         og_dur_mat = original_data.duration_matrix(profile=og_veh_type.profile)
+        
+        # 使用原始矩阵的dtype和相同的结构
+        sub_dist_mat = np.zeros((num_sub_locs, num_sub_locs), dtype=og_dist_mat.dtype)
+        sub_dur_mat = np.zeros((num_sub_locs, num_sub_locs), dtype=og_dur_mat.dtype)
 
         for old_frm, new_frm in old_to_new_map.items():
             for old_to, new_to in old_to_new_map.items():
                 sub_dist_mat[new_frm, new_to] = og_dist_mat[old_frm, old_to]
                 sub_dur_mat[new_frm, new_to] = og_dur_mat[old_frm, old_to]
 
+        # 修复：添加缺失的groups参数，使用空列表作为默认值
         sub_data = ProblemData(
             clients=sub_clients,
             depots=sub_depots,
             vehicle_types=[sub_veh_type],
-            distance_matrices=[sub_dist_mat],
-            duration_matrices=[sub_dur_mat],
+            distance_matrices=[sub_dist_mat],  # type: ignore  # PyVRP类型注解不匹配实际实现
+            duration_matrices=[sub_dur_mat],   # type: ignore  # PyVRP类型注解不匹配实际实现
+            groups=[],  # 添加缺失的groups参数
         )
         subproblems.append(sub_data)
         

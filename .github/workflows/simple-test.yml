@@ -1,0 +1,33 @@
+name: 简单测试
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+    
+    - name: 设置Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: 运行分解逻辑测试
+      run: |
+        python test/test_decomposition.py
+    
+    - name: 测试主程序 (短时间运行)
+      run: |
+        python src/main.py data/homberger_200_customer_instances/C1_2_1.TXT --runtime 10 --runs 1 
