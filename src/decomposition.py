@@ -32,6 +32,12 @@ def barycenter_clustering_decomposition(
     if not routes:
         return []
 
+    # print(f"Elite solution routes in decomposition ({len(routes)} routes):")
+    # for route_idx, route in enumerate(routes):
+    #     print(f"  Route {route_idx + 1}: {list(route.visits())}")
+    #     print()
+    # exit(0)
+
     barycenters = []
     route_customer_counts = []
     for route in routes:
@@ -58,6 +64,7 @@ def barycenter_clustering_decomposition(
     for idx, label in enumerate(labels):
         route_groups[label].append(idx)  # 存储路线的索引，而非对象
 
+
     # --- 新增逻辑：聚类均衡化 ---
     if max_customers_per_cluster is not None:
         print("Balancing clusters...")
@@ -68,7 +75,7 @@ def barycenter_clustering_decomposition(
         current_cluster_centers = kmeans.cluster_centers_.copy()
 
         MAX_BALANCE_ITERATIONS = 100
-        TOLERANCE = 1.1 
+        TOLERANCE = 1.05 
         
         for _ in range(MAX_BALANCE_ITERATIONS):
             overloaded_clusters = [
@@ -129,60 +136,64 @@ def barycenter_clustering_decomposition(
         else: 
             print(f"Warning: Balancing reached max iterations ({MAX_BALANCE_ITERATIONS}) but may not be perfect.")
 
-    # 5. 为每个路线分组创建子问题
+
+     # 5. 为每个路线分组创建子问题
     subproblems = []
+    subproblem_mappings = []  # 存储映射信息
     og_clients = original_data.clients()
     og_depots = original_data.depots()
     
-    # 修复：创建client索引到location索引的映射，使用位置索引而不是id
-    # 客户端在location列表中的索引从num_depots开始
-    client_to_loc_map = {}
-    for client_idx, client in enumerate(og_clients):
-        client_to_loc_map[client_idx] = client_idx + original_data.num_depots
-
     # 将路线索引转换回路线对象
     final_route_groups = [[routes[idx] for idx in group] for group in route_groups]
 
-    for group in final_route_groups:
+    for cluster_idx, group in enumerate(final_route_groups):
         if not group:
             continue
             
-        # 修复：使用列表而不是集合来避免unhashable类型错误
-        sub_client_locs = []
-        sub_depot_locs = []
+        # 收集该组中涉及的所有客户和depot
+        client_locs = []
+        depot_locs = []
         
         for route in group:
+            # route.visits() 只包含客户，直接收集
             for client_loc_idx in route.visits():
-                # client_loc_idx已经是location索引，直接使用
-                if client_loc_idx not in sub_client_locs:
-                    sub_client_locs.append(client_loc_idx)
+                if client_loc_idx not in client_locs:
+                    client_locs.append(client_loc_idx)
             
+            # 单独收集depot
             start_depot_idx = route.start_depot()
             end_depot_idx = route.end_depot()
-            if start_depot_idx not in sub_depot_locs:
-                sub_depot_locs.append(start_depot_idx)
-            if end_depot_idx not in sub_depot_locs:
-                sub_depot_locs.append(end_depot_idx)
+            if start_depot_idx not in depot_locs:
+                depot_locs.append(start_depot_idx)
+            if end_depot_idx not in depot_locs:
+                depot_locs.append(end_depot_idx)
 
-        if not sub_client_locs:
+        if not client_locs:
             continue
-
-        all_loc_indices = sorted(sub_depot_locs) + sorted(sub_client_locs)
+        
+        # 创建新的索引映射：depot在前，客户在后
+        all_loc_indices = sorted(depot_locs) + sorted(client_locs)
         old_to_new_map = {old_idx: new_idx for new_idx, old_idx in enumerate(all_loc_indices)}
-
+        
+        # 创建客户编号映射记录
+        client_mapping = {}
+        for new_idx, old_idx in enumerate(all_loc_indices):
+            if old_idx != 0:  # 非depot
+                client_mapping[new_idx] = old_idx
+        
+        # 创建ProblemData对象（如果需要在内存中使用）
         num_sub_locs = len(all_loc_indices)
-        sub_depots = [og_depots[loc_idx] for loc_idx in sorted(sub_depot_locs)]
-        sub_clients = [og_clients[loc_idx - len(og_depots)] for loc_idx in sorted(sub_client_locs)]
+        sub_depots = [og_depots[loc_idx] for loc_idx in sorted(depot_locs)]
+        sub_clients = [og_clients[loc_idx - len(og_depots)] for loc_idx in sorted(client_locs)]
         
         first_route_type_idx = group[0].vehicle_type()
         og_veh_type = original_data.vehicle_type(first_route_type_idx)
         sub_veh_type = VehicleType(num_available=len(group), capacity=og_veh_type.capacity)
         
-        # 修复：获取原始矩阵并创建子矩阵，使用与原始数据相同的dtype
+        # 创建距离和持续时间矩阵
         og_dist_mat = original_data.distance_matrix(profile=og_veh_type.profile)
         og_dur_mat = original_data.duration_matrix(profile=og_veh_type.profile)
         
-        # 使用原始矩阵的dtype和相同的结构
         sub_dist_mat = np.zeros((num_sub_locs, num_sub_locs), dtype=og_dist_mat.dtype)
         sub_dur_mat = np.zeros((num_sub_locs, num_sub_locs), dtype=og_dur_mat.dtype)
 
@@ -191,15 +202,24 @@ def barycenter_clustering_decomposition(
                 sub_dist_mat[new_frm, new_to] = og_dist_mat[old_frm, old_to]
                 sub_dur_mat[new_frm, new_to] = og_dur_mat[old_frm, old_to]
 
-        # 修复：添加缺失的groups参数，使用空列表作为默认值
         sub_data = ProblemData(
             clients=sub_clients,
             depots=sub_depots,
             vehicle_types=[sub_veh_type],
-            distance_matrices=[sub_dist_mat],  # type: ignore  # PyVRP类型注解不匹配实际实现
-            duration_matrices=[sub_dur_mat],   # type: ignore  # PyVRP类型注解不匹配实际实现
-            groups=[],  # 添加缺失的groups参数
+            distance_matrices=[sub_dist_mat],  # type: ignore
+            duration_matrices=[sub_dur_mat],   # type: ignore
+            groups=[],
         )
         subproblems.append(sub_data)
         
-    return subproblems
+        # 保存映射关系到字典
+        subproblem_mappings.append({
+            'client_mapping': client_mapping,
+            'cluster_id': cluster_idx + 1,
+            'old_to_new_map': old_to_new_map
+        })
+         
+    return subproblems, subproblem_mappings
+
+
+

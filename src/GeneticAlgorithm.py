@@ -66,8 +66,8 @@ class GeneticAlgorithmParams:
     nb_iter_no_improvement: int = 20_000
     # <<< 新增参数 >>>
     decomposition_frequency: int = 1_000  # 每 5000 次迭代执行一次分解
-    num_subproblems: int = 1             # 分解成 1 个子问题
-    subproblem_iters: int = 3_000         # 求解子问题时的迭代次数
+    num_subproblems: int = 2             # 分解成 1 个子问题
+    subproblem_iters: int = 2_00         # 求解子问题时的迭代次数
 
     def __post_init__(self):
         if not 0 <= self.repair_probability <= 1:
@@ -208,7 +208,7 @@ class GeneticAlgorithm:
             
             # --- START: DECOMPOSITION LOGIC (关键修改部分) ---
             # 检查是否支持分解并且达到了触发频率
-            if DECOMPOSITION_SUPPORTED and self._params.num_subproblems >= 1 and iters % self._params.decomposition_frequency == 0:
+            if DECOMPOSITION_SUPPORTED and self._params.num_subproblems > 1 and iters % self._params.decomposition_frequency == 0:
                 print_progress.restart()  # 可选：在日志中标记分解阶段
 
                 print(f"Decomposition triggered at iteration {iters}.")
@@ -219,33 +219,65 @@ class GeneticAlgorithm:
                 elite_solution = self._best
 
                 # 2. 调用您的分解函数
-                # subproblems = barycenter_clustering_decomposition(
-                #     elite_solution, 
-                #     self._data, 
-                #     self._params.num_subproblems,
-                #     random_state=iters
-                # )
-                subproblems = [self._data]  # 简化为不分解，直接使用原数据
+                subproblems, subproblem_mappings = barycenter_clustering_decomposition(
+                    elite_solution, 
+                    self._data, 
+                    self._params.num_subproblems,
+                    max_customers_per_cluster=len(self._data.clients())//self._params.num_subproblems,
+                    random_state=iters
+                )
+                
                 
                 if subproblems:
                     # 3. 求解子问题
                     subproblem_solutions = []
                     # 这里我们简化为串行求解，也可以修改为并行
-                    for sub_data in subproblems:
+                    for idx, sub_data in enumerate(subproblems, 1):
+                        print(f"Solving subproblem {idx}/{len(subproblems)} with {self._params.subproblem_iters} iterations...")
                         # 论文中建议用固定的迭代次数来求解子问题 [cite: 633]
                         stop_sub = MaxIterations(self._params.subproblem_iters)
                         res = solve_subproblem(sub_data, stop=stop_sub, seed=iters)
 
                         if res.is_feasible():
-                            subproblem_solutions.append(res.best)
+                            subproblem_solutions.append((res.best, subproblem_mappings[idx-1]))
+                            print(f"Subproblem {idx} solved successfully with cost: {res.cost()}")
+                        else:
+                            print(f"Subproblem {idx} returned infeasible solution")
 
-                    # 4. 合并与整合
+                    # 4. 合并与整合 - 映射客户索引回原始问题
                     if subproblem_solutions:
-                        new_routes = [
-                            route
-                            for sol in subproblem_solutions
-                            for route in sol.routes()
-                        ]
+                        new_routes = []
+                        for sol, mapping in subproblem_solutions:
+                            # 创建从子问题索引到原始问题索引的映射
+                            new_to_old_map = {new_idx: old_idx for old_idx, new_idx in mapping['old_to_new_map'].items()}
+                            
+                            for route in sol.routes():
+                                # 映射路线中的客户索引回原始问题
+                                original_visits = [new_to_old_map[client_idx] for client_idx in route.visits()]
+                                
+                                # 重建路线 - 使用正确的PyVRP API
+                                from pyvrp._pyvrp import Route, Trip
+                                
+                                # 映射depot索引
+                                original_start_depot = new_to_old_map[route.start_depot()]
+                                original_end_depot = new_to_old_map[route.end_depot()]
+                                
+                                # 创建Trip对象
+                                trip = Trip(
+                                    self._data, 
+                                    original_visits, 
+                                    0,  # 索引参数
+                                    start_depot=original_start_depot, 
+                                    end_depot=original_end_depot
+                                )
+                                
+                                # 创建Route对象 - 使用原始问题的第一个车辆类型
+                                original_route = Route(
+                                    self._data,
+                                    [trip],
+                                    0  # 使用原始问题的第一个车辆类型
+                                )
+                                new_routes.append(original_route)
                         
                         print(f"Number of routes to merge: {len(new_routes)}")
                         

@@ -154,7 +154,7 @@ class TestBarycenteClustering:
         """测试带有最大客户数限制的聚类均衡功能"""
         # 设置每个聚类最多3个客户
         max_customers_per_cluster = 3
-        subproblems = barycenter_clustering_decomposition(
+        subproblems, subproblem_mappings = barycenter_clustering_decomposition(
             self.solution,
             self.problem_data,
             num_clusters=2,
@@ -197,14 +197,14 @@ class TestBarycenteClustering:
     def test_random_state_consistency(self):
         """测试相同随机种子的一致性"""
         # 使用相同的随机种子运行两次
-        subproblems1 = barycenter_clustering_decomposition(
+        subproblems1, subproblem_mappings1 = barycenter_clustering_decomposition(
             self.solution,
             self.problem_data,
             num_clusters=2,
             random_state=123
         )
         
-        subproblems2 = barycenter_clustering_decomposition(
+        subproblems2, subproblem_mappings2 = barycenter_clustering_decomposition(
             self.solution,
             self.problem_data,
             num_clusters=2,
@@ -224,7 +224,7 @@ class TestBarycenteClustering:
         # 创建没有路线的空解
         empty_solution = Solution(self.problem_data, [])
         
-        subproblems = barycenter_clustering_decomposition(
+        subproblems, subproblem_mappings = barycenter_clustering_decomposition(
             empty_solution,
             self.problem_data,
             num_clusters=2,
@@ -236,7 +236,7 @@ class TestBarycenteClustering:
     
     def test_subproblem_structure(self):
         """测试子问题的结构完整性"""
-        subproblems = barycenter_clustering_decomposition(
+        subproblems, subproblem_mappings = barycenter_clustering_decomposition(
             self.solution,
             self.problem_data,
             num_clusters=2,
@@ -289,7 +289,7 @@ def run_manual_test():
             
             # 测试基本分解
             print("\n--- 测试基本分解 ---")
-            subproblems = barycenter_clustering_decomposition(
+            subproblems, subproblem_mappings = barycenter_clustering_decomposition(
                 solution,
                 problem_data,
                 num_clusters=2,
@@ -302,7 +302,7 @@ def run_manual_test():
             
             # 测试均衡分解
             print("\n--- 测试均衡分解 ---")
-            balanced_subproblems = barycenter_clustering_decomposition(
+            balanced_subproblems, balanced_subproblem_mappings = barycenter_clustering_decomposition(
                 solution,
                 problem_data,
                 num_clusters=3,
