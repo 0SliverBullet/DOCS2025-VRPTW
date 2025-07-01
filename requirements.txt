@@ -1,7 +1,6 @@
-# Python version
-python>=3.13.5
-
-# Required packages
+# Required packages for DOCS2025-VRPTW
 pyvrp>=0.11.3
 numpy>=2.3.0
 scikit-learn>=1.6.1
+vrplib>=1.0.0
+tomli>=1.2.0
