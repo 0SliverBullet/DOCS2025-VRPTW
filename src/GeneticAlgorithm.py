@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import concurrent.futures
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable, Collection
 
@@ -32,6 +33,45 @@ try:
 except ImportError:
     DECOMPOSITION_SUPPORTED = False
 # <<< 结束新增导入 >>>
+
+# 并行求解子问题的工作函数，仿照main_8core.py的写法
+def solve_subproblem_worker(sub_data, subproblem_mapping, idx, subproblem_iters, seed):
+    """
+    单个子问题求解的工作函数。
+    用于并行处理，避免进程间传递复杂对象。
+    
+    Parameters
+    ----------
+    sub_data : ProblemData
+        子问题数据
+    subproblem_mapping : dict
+        子问题映射信息
+    idx : int
+        子问题索引
+    subproblem_iters : int
+        子问题求解迭代次数
+    seed : int
+        随机种子
+        
+    Returns
+    -------
+    tuple
+        (子问题索引, 求解结果, 映射信息, 是否可行)
+    """
+    try:
+        print(f"Solving subproblem {idx} with {subproblem_iters} iterations...")
+        stop_sub = MaxIterations(subproblem_iters)
+        res = solve_subproblem(sub_data, stop=stop_sub, seed=seed)
+        
+        if res.is_feasible():
+            print(f"Subproblem {idx} solved successfully with cost: {res.cost()}")
+            return (idx, res.best, subproblem_mapping, True)
+        else:
+            print(f"Subproblem {idx} returned infeasible solution")
+            return (idx, None, subproblem_mapping, False)
+    except Exception as e:
+        print(f"Error solving subproblem {idx}: {e}")
+        return (idx, None, subproblem_mapping, False)
 
 @dataclass
 class GeneticAlgorithmParams:
@@ -65,9 +105,9 @@ class GeneticAlgorithmParams:
     repair_probability: float = 0.80
     nb_iter_no_improvement: int = 20_000
     # <<< 新增参数 >>>
-    decomposition_frequency: int = 1_000  # 每 5000 次迭代执行一次分解
-    num_subproblems: int = 2             # 分解成 1 个子问题
-    subproblem_iters: int = 2_00         # 求解子问题时的迭代次数
+    decomposition_frequency: int = 4_000  # 每 4000 次迭代执行一次分解
+    num_subproblems: int = 8             # 分解成 8 个子问题
+    subproblem_iters: int = 1_000         # 求解子问题时的迭代次数
 
     def __post_init__(self):
         if not 0 <= self.repair_probability <= 1:
@@ -229,20 +269,34 @@ class GeneticAlgorithm:
                 
                 
                 if subproblems:
-                    # 3. 求解子问题
+                    # 3. 并行求解子问题 (仿照main_8core.py的写法)
                     subproblem_solutions = []
-                    # 这里我们简化为串行求解，也可以修改为并行
-                    for idx, sub_data in enumerate(subproblems, 1):
-                        print(f"Solving subproblem {idx}/{len(subproblems)} with {self._params.subproblem_iters} iterations...")
-                        # 论文中建议用固定的迭代次数来求解子问题 [cite: 633]
-                        stop_sub = MaxIterations(self._params.subproblem_iters)
-                        res = solve_subproblem(sub_data, stop=stop_sub, seed=iters)
-
-                        if res.is_feasible():
-                            subproblem_solutions.append((res.best, subproblem_mappings[idx-1]))
-                            print(f"Subproblem {idx} solved successfully with cost: {res.cost()}")
-                        else:
-                            print(f"Subproblem {idx} returned infeasible solution")
+                    num_subproblems = len(subproblems)
+                    print(f"Solving {num_subproblems} subproblems in parallel...")
+                    
+                    # 使用进程池并行执行子问题求解
+                    with concurrent.futures.ProcessPoolExecutor(max_workers=num_subproblems) as executor:
+                        # 提交所有子问题求解任务
+                        futures = {
+                            executor.submit(
+                                solve_subproblem_worker, 
+                                sub_data, 
+                                subproblem_mappings[idx], 
+                                idx + 1, 
+                                self._params.subproblem_iters, 
+                                iters + idx
+                            ): idx 
+                            for idx, sub_data in enumerate(subproblems)
+                        }
+                        
+                        # 收集结果
+                        for future in concurrent.futures.as_completed(futures):
+                            try:
+                                idx, solution, mapping, is_feasible = future.result()
+                                if is_feasible and solution is not None:
+                                    subproblem_solutions.append((solution, mapping))
+                            except Exception as exc:
+                                print(f"A subproblem worker generated an exception: {exc}")
 
                     # 4. 合并与整合 - 映射客户索引回原始问题
                     if subproblem_solutions:

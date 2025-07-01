@@ -60,7 +60,7 @@ Note: time in seconds.
 
 
 
-- Improved Results: []
+- Improved Results: HGS + barycenter clustering decomposition + subproblem parallel [2025/07/01]
 
 |                           Instance                           | Vehicles (Ours) | Distance (Ours) | Time (Ours) |
 | :----------------------------------------------------------: | :-------------: | :-------------: | :---------: |
