@@ -43,7 +43,7 @@ Note: time in seconds.
 
 
 
-- Improved Results: parallel computing with 8 CPU cores, larger coefficient with respect to # of vehihle [2025/06/29]
+- Improved Results: parallel computing with 8 CPU cores, larger coefficient with respect to # of vehihle  + 1 run [2025/06/29]
 
 |                           Instance                           | Vehicles (Ours) | Distance (Ours) | Time (Ours) |
 | :----------------------------------------------------------: | :-------------: | :-------------: | :---------: |
@@ -60,20 +60,37 @@ Note: time in seconds.
 
 
 
-- Improved Results: HGS + barycenter clustering decomposition + subproblem parallel [2025/07/01]
+- Improved Results: HGS parallel computing with 8 CPU cores + 10 run [2025/07/03]
 
-|                           Instance                           | Vehicles (Ours) | Distance (Ours) | Time (Ours) |
-| :----------------------------------------------------------: | :-------------: | :-------------: | :---------: |
-| [c1_2_1](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_1.txt) |                 |                 |             |
-| [c1_2_2](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_2.18_2917.89.txt) |                 |                 |             |
-| [c1_2_3](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |             |
-| [c1_2_4](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |             |
-| [c1_2_5](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_5.txt) |                 |                 |             |
-|                            c1_8_1                            |                 |                 |             |
-| [c1_8_2](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_2-72-26540.53.txt) |                 |                 |             |
-| [c1_8_3](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_3.72_24242.49.txt) |                 |                 |             |
-| [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |                 |                 |             |
-| [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |                 |                 |             |
+|                           Instance                           | Vehicles (Ours) | Distance (Ours) | $\bar{\text{Vehicles}}$(Ours) | $\bar{\text{Distance}}$(Ours) | Time (Ours) |
+| :----------------------------------------------------------: | :-------------: | :-------------: | :---------------------------: | :---------------------------: | :---------: |
+| [c1_2_1](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_1.txt) |                 |                 |                               |                               |             |
+| [c1_2_2](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_2.18_2917.89.txt) |                 |                 |                               |                               |             |
+| [c1_2_3](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |                               |                               |             |
+| [c1_2_4](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |                               |                               |             |
+| [c1_2_5](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_5.txt) |                 |                 |                               |                               |             |
+|                            c1_8_1                            |                 |                 |                               |                               |             |
+| [c1_8_2](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_2-72-26540.53.txt) |       74        |    25611.74     |       74.00 $\pm$ 0.00        |     25766.61 $\pm$ 111.68     |    1800     |
+| [c1_8_3](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_3.72_24242.49.txt) |       72        |    24846.55     |       72.00 $\pm$ 0.00        |     25002.85 $\pm$ 82.55      |    1800     |
+| [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |    24545.69     |       72.00 $\pm$ 0.00        |     24712.05 $\pm$ 139.53     |    1800     |
+| [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |                 |                 |                               |                               |             |
+
+
+
+- Improved Results: HGS + barycenter clustering decomposition + subproblem parallel computing with 8 CPU cores + 10 run [2025/07/01]
+
+|                           Instance                           | Vehicles (Ours) | Distance (Ours) | $\bar{\text{Vehicles}}$(Ours) | $\bar{\text{Distance}}$(Ours) | Time (Ours) |
+| :----------------------------------------------------------: | :-------------: | :-------------: | :---------------------------: | :---------------------------: | :---------: |
+| [c1_2_1](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_1.txt) |                 |                 |                               |                               |             |
+| [c1_2_2](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_2.18_2917.89.txt) |                 |                 |                               |                               |             |
+| [c1_2_3](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |                               |                               |             |
+| [c1_2_4](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |                 |                 |                               |                               |             |
+| [c1_2_5](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_5.txt) |                 |                 |                               |                               |             |
+|                            c1_8_1                            |                 |                 |                               |                               |             |
+| [c1_8_2](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_2-72-26540.53.txt) |       74        |    25689.95     |       74.70 $\pm$ 0.48        |     25471.72 $\pm$ 276.77     |    1800     |
+| [c1_8_3](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_3.72_24242.49.txt) |       72        |    24474.38     |       72.00 $\pm$ 0.00        |     24546.45 $\pm$ 65.27      |    1800     |
+| [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |    23990.70     |       72.00 $\pm$ 0.00        |     24252.49 $\pm$ 232.85     |    1800     |
+| [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |                 |                 |                               |                               |             |
 
 
 

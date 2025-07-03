@@ -13,21 +13,28 @@ import glob
 def main():
     # 设置路径
     data_dir = "data/homberger_800_customer_instances"
-    output_dir = "output"
-    src_main = "./src/main.py"
+    output_dir = "output/8cor_10runs_test"
+    src_main = "./src/main_8core.py"
     
     # 确保输出目录存在
     os.makedirs(output_dir, exist_ok=True)
     
     # 获取所有.TXT文件并按名称排序
     pattern = os.path.join(data_dir, "*.TXT")
-    txt_files = sorted(glob.glob(pattern))
+    all_txt_files = sorted(glob.glob(pattern))
     
-    if not txt_files:
+    # 过滤掉以_1.TXT和_5.TXT结尾的文件
+    txt_files = [f for f in all_txt_files if not (f.endswith("_1.TXT") or f.endswith("_5.TXT"))]
+    
+    if not all_txt_files:
         print(f"在 {data_dir} 中未找到.TXT文件")
         return
     
-    print(f"找到 {len(txt_files)} 个测试文件")
+    skipped_files = [f for f in all_txt_files if f.endswith("_1.TXT") or f.endswith("_5.TXT")]
+    if skipped_files:
+        print(f"跳过的文件: {[Path(f).name for f in skipped_files]}")
+    
+    print(f"找到 {len(all_txt_files)} 个测试文件，将测试 {len(txt_files)} 个文件")
     
     # 逐个测试每个文件
     for i, txt_file in enumerate(txt_files, 1):
@@ -44,7 +51,7 @@ def main():
             src_main,
             txt_file,
             "--runtime", "1800",
-            "--runs", "1"
+            "--runs", "10"
         ]
         
         try:
