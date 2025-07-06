@@ -92,7 +92,20 @@ Note: time in seconds.
 | [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |    23990.70     |       72.00 $\pm$ 0.00        |     24252.49 $\pm$ 232.85     |    1800     |
 | [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |                 |                 |                               |                               |             |
 
+- Submission Results：[2025/07/07]
 
+|                           Instance                           | Vehicles (Ours) | Distance (Ours) | Duration (Ours) | Time (Ours) |
+| :----------------------------------------------------------: | :-------------: | :-------------: | :-------------: | :---------: |
+| [c1_2_1](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_1.txt) |       20        |     2698.6      |     20756.0     |    1800     |
+| [c1_2_2](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_2.18_2917.89.txt) |       18        |     2911.6      |     20988.0     |    1800     |
+| [c1_2_3](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |       18        |     2701.0      |     20904.1     |    1800     |
+| [c1_2_4](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |       18        |     2637.2      |     20751.5     |    1800     |
+| [c1_2_5](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_5.txt) |       20        |     2694.9      |     20694.9     |    1800     |
+|                            c1_8_1                            |       80        |     25156.9     |     97592.4     |    1800     |
+| [c1_8_2](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_2-72-26540.53.txt) |       74        |     25501.7     |     98696.5     |    1800     |
+| [c1_8_3](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_3.72_24242.49.txt) |       72        |     24431.7     |     97769.7     |    1800     |
+| [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |     23944.2     |     97420.8     |    1800     |
+| [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |       80        |     25138.6     |     97516.5     |    1800     |
 
 ## Environments
 
@@ -128,5 +141,5 @@ PyVRP:
 - [ ] 计算精度：坐标间的欧几里得距离应该保留几位小数（Ours默认一位小数）？目前表格Distance比较没有意义。根据VRPTW.md文件示例输出，Distance**默认是一位小数**，主办方说没有计算精度限制（逆天），那我摆了，**直接一位小数**
 - [x] 读入文件处理：目前是粗糙地将Solomon格式转化为CVRPLIB格式读入，但是这种转换默认每个客户的SERVICE_TIME相同。后面**要做好更加规范严格的数据读入**。解决方案：重构PyVRP库里的read.py，使之支持读入Solomon格式Instance。
 - [x] 优化目标修改：目前是直接最小化Distance，因此：我要修改使得优先最小化车辆数，再最小化Distance。解决方案：将fixed_costs设置为1000
-- [ ] 创新改进：分解策略引入（待定）
+- [x] 创新改进：分解策略 barycenter clustering decomposition + subproblem parallel computing with 8 CPU cores
 

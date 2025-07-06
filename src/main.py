@@ -9,20 +9,59 @@ Distributed under the MIT License. See LICENSE for more information.
 from cli_parser import parse_args
 from read import read_instance
 from Model import Model
+from solve import SolveParams
+from GeneticAlgorithm import GeneticAlgorithmParams
 from pyvrp.stop import MaxRuntime
 import statistics
 import time
+
+def is_better_solution(result1, result2):
+    """
+    比较两个Result对象，判断result1是否比result2更好
+    比较标准：
+    1. 车辆总数，车辆数少的优先
+    2. 车辆总数相同时，比较总行驶距离，距离短的优先
+    3. 总行驶距离相同时，比较总时间，时间短的优先
+    """
+    # 比较车辆数
+    vehicles1 = result1.best.num_routes()
+    vehicles2 = result2.best.num_routes()
+    if vehicles1 != vehicles2:
+        return vehicles1 < vehicles2
+    
+    # 车辆数相同，比较距离
+    distance1 = result1.best.distance()
+    distance2 = result2.best.distance()
+    if distance1 != distance2:
+        return distance1 < distance2
+    
+    # 距离相同，比较时间
+    duration1 = result1.best.duration()
+    duration2 = result2.best.duration()
+    return duration1 < duration2
 
 if __name__ == "__main__":
 
     # 解析传入的命令行参数
     args = parse_args()
 
+    # 创建自定义的遗传算法参数
+    genetic_params = GeneticAlgorithmParams(
+        num_subproblems=args.num_subproblems,
+        decomposition_frequency=args.decomposition_freq,
+        subproblem_iters=args.subproblem_iters,
+        # 保持其他参数为默认值
+    )
+
+    # 创建求解参数
+    solve_params = SolveParams(genetic=genetic_params)
+
     # 使用传入的参数读取实例和设置求解时间
     INSTANCE = read_instance(
         args.instance_path, 
         instance_format="solomon", 
-        round_func="exact"
+        # round_func="exact"
+        round_func="dimacs"
     )
     
     # 设置种子递增常量
@@ -30,14 +69,18 @@ if __name__ == "__main__":
     
     print(f"Solving {args.instance_path} with a max runtime of {args.runtime} seconds...")
     print(f"Number of runs: {args.runs}")
+    print(f"Number of subproblems: {args.num_subproblems}")
+    print(f"Decomposition frequency: {args.decomposition_freq}")
+    print(f"Subproblem iterations: {args.subproblem_iters}")
     
     best_result = None
-    best_distance = float('inf')
     
     # 收集所有运行的结果用于统计
     all_distances = []
     all_vehicle_counts = []
+    all_durations = []
     all_run_times = []
+    all_feasible_results = []  # 保存所有可行的Result对象
     feasible_runs = 0
     
     # 循环控制求解器运行次数
@@ -50,7 +93,7 @@ if __name__ == "__main__":
         
         # 为每次运行创建新的模型实例，确保完全独立
         model = Model.from_data(INSTANCE)
-        result = model.solve(stop=MaxRuntime(args.runtime), seed=current_seed, display=True)
+        result = model.solve(stop=MaxRuntime(args.runtime), seed=current_seed, display=True, params=solve_params)
         
         # 记录结束时间并计算运行时间
         end_time = time.time()
@@ -59,19 +102,21 @@ if __name__ == "__main__":
         
         # 检查是否有可行解
         if result.best.is_feasible():
-            distance = round(result.best.distance() / 1000, 2)
+            distance = round(result.best.distance() / 10, 1)
             vehicle_count = result.best.num_routes()
-            print(f"Found a solution with # vehicles: {vehicle_count}, distance: {distance:.2f}.")
+            duration = round(result.best.duration() / 10, 1)  
+            print(f"Found a solution with # vehicles: {vehicle_count}, distance: {distance:.1f}, duration: {duration:.1f}.")
             print(f"Run time: {run_time:.2f} seconds")
             
             # 收集统计数据
             all_distances.append(distance)
             all_vehicle_counts.append(vehicle_count)
+            all_durations.append(duration)
+            all_feasible_results.append(result)
             feasible_runs += 1
             
             # 更新最佳结果
-            if distance < best_distance:
-                best_distance = distance
+            if best_result is None or is_better_solution(result, best_result):
                 best_result = result
                 print(f"*** New best solution found! ***")
         else:
@@ -84,9 +129,10 @@ if __name__ == "__main__":
     print(f"Feasible solutions found: {feasible_runs}")
     
     if best_result is not None:
-        print(f"\nBest solution found over {args.runs} runs:")
-        print(f"  Vehicles: {best_result.best.num_routes()}")
-        print(f"  Distance: {best_distance:.2f}")
+        best_distance = round(best_result.best.distance() / 10, 1)
+        best_duration = round(best_result.best.duration() / 10, 1)
+        
+
         
         # 输出统计信息
         if args.runs > 1:
@@ -104,17 +150,34 @@ if __name__ == "__main__":
                 # 距离统计
                 avg_distance = statistics.mean(all_distances)
                 std_distance = statistics.stdev(all_distances) if len(all_distances) > 1 else 0.0
-                print(f"  Distance - Mean: {avg_distance:.2f}, Std Dev: {std_distance:.2f}")
-                print(f"  Distance - Min: {min(all_distances):.2f}, Max: {max(all_distances):.2f}")
+                print(f"  Distance - Mean: {avg_distance:.1f}, Std Dev: {std_distance:.1f}")
+                print(f"  Distance - Min: {min(all_distances):.1f}, Max: {max(all_distances):.1f}")
                 
                 # 车辆数统计
                 avg_vehicles = statistics.mean(all_vehicle_counts)
                 std_vehicles = statistics.stdev(all_vehicle_counts) if len(all_vehicle_counts) > 1 else 0.0
                 print(f"  Vehicles - Mean: {avg_vehicles:.2f}, Std Dev: {std_vehicles:.2f}")
                 print(f"  Vehicles - Min: {min(all_vehicle_counts)}, Max: {max(all_vehicle_counts)}")
+                
+                # 时间统计
+                avg_duration = statistics.mean(all_durations)
+                std_duration = statistics.stdev(all_durations) if len(all_durations) > 1 else 0.0
+                print(f"  Duration - Mean: {avg_duration:.1f}, Std Dev: {std_duration:.1f}")
+                print(f"  Duration - Min: {min(all_durations):.1f}, Max: {max(all_durations):.1f}")
             elif feasible_runs == 1:
                 print(f"\nOnly one feasible solution found, no solution quality statistics to compute.")
         else:
             print(f"\nSingle run completed in {all_run_times[0]:.2f} seconds.")
+        
+
+        print(f"\nBest solution found over {args.runs} runs:")
+        print(f"  Vehicles: {best_result.best.num_routes()}")
+        print(f"  Distance: {best_distance:.1f}")
+        print(f"  Duration: {best_duration:.1f}")
+        # 输出最佳解的详细信息和路径
+        print(f"\n" + "="*60)
+        print("BEST SOLUTION DETAILS:")
+        print("="*60)
+        print(best_result)
     else:
         print("No feasible solutions found in any of the runs.")

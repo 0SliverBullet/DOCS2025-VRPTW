@@ -54,14 +54,14 @@ def parse_args():
     parser.add_argument(
         "--decomposition_freq", 
         type=int, 
-        default=5000, 
+        default=4_000, 
         help="Iterations between decomposition phases."
     )
     
     parser.add_argument(
         "--subproblem_iters", 
         type=int, 
-        default=10000, 
+        default=1_000, 
         help="Number of iterations for solving subproblems."
     )
     
