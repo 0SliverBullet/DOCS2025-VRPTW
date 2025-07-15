@@ -111,6 +111,8 @@ Note: time in seconds.
 
 - Operating System: Windows 11（本地测试），Linux（主办方服务器）
 - 8核 + 256G 的配置
+- Python版本：Python 3.13.5（安装依赖库前请确认你的python版本！！！否则无法安装相应依赖）`conda create -n VRPTW python=3.13.5` 然后 `conda activate VRPTW`
+- 依赖库安装：`pip install -r requirements.txt`
 
 
 
