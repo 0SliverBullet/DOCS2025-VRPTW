@@ -12,3 +12,5 @@ __pycache__
 pyvrp
 output/
 tmp/
+
+solutions/unformatted_solutions/
