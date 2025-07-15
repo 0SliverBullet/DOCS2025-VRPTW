@@ -8,20 +8,37 @@ import math
 import re
 from typing import List, Tuple, Dict
 
-def read_problem_data(data_file_path: str) -> Tuple[Dict[int, Tuple[float, float]], Dict[int, int], Dict[int, int], Dict[int, int], Dict[int, int]]:
+def read_problem_data(data_file_path: str) -> Tuple[Dict[int, Tuple[float, float]], Dict[int, int], Dict[int, int], Dict[int, int], Dict[int, int], int, int, int]:
     """
-    Read problem data file and extract coordinates, demands, service times, and time windows.
+    Read problem data file and extract coordinates, demands, service times, time windows, and vehicle info.
     Apply DIMACS scaling (multiply coordinates and times by 10) to match the solver's format.
-    Returns: (coordinates, demands, service_times, ready_times, due_dates)
+    Returns: (coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_ready_time, depot_due_time)
     """
     coordinates = {}  # customer_id -> (x, y)
     demands = {}      # customer_id -> demand
     service_times = {} # customer_id -> service_time
     ready_times = {}  # customer_id -> ready_time (time window start)
     due_dates = {}    # customer_id -> due_date (time window end)
+    vehicle_capacity = 0
+    depot_ready_time = 0
+    depot_due_time = 0
     
     with open(data_file_path, 'r') as file:
         lines = file.readlines()
+    
+    # Find and read vehicle information
+    vehicle_section = False
+    for i, line in enumerate(lines):
+        if line.strip().startswith("VEHICLE"):
+            vehicle_section = True
+            continue
+        if vehicle_section and line.strip().startswith("NUMBER"):
+            # Next line should contain vehicle count and capacity
+            if i + 1 < len(lines):
+                vehicle_data = lines[i + 1].strip().split()
+                if len(vehicle_data) >= 2:
+                    vehicle_capacity = int(vehicle_data[1])
+            break
     
     # Find the start of customer data
     customer_start = -1
@@ -55,8 +72,13 @@ def read_problem_data(data_file_path: str) -> Tuple[Dict[int, Tuple[float, float
             service_times[cust_no] = service_time
             ready_times[cust_no] = ready_time
             due_dates[cust_no] = due_date
+            
+            # Store depot information (customer 0)
+            if cust_no == 0:
+                depot_ready_time = ready_time
+                depot_due_time = due_date
     
-    return coordinates, demands, service_times, ready_times, due_dates
+    return coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_ready_time, depot_due_time
 
 def calculate_distance(coord1: Tuple[float, float], coord2: Tuple[float, float]) -> int:
     """Calculate Euclidean distance between two coordinates, return as int (truncated)."""
@@ -100,16 +122,18 @@ def parse_solution_file(solution_file_path: str) -> Tuple[List[List[int]], float
 
 def calculate_route_metrics(route: List[int], coordinates: Dict[int, Tuple[float, float]], 
                           demands: Dict[int, int], service_times: Dict[int, int],
-                          ready_times: Dict[int, int], due_dates: Dict[int, int]) -> Tuple[float, int, float]:
+                          ready_times: Dict[int, int], due_dates: Dict[int, int],
+                          vehicle_capacity: int, depot_due_time: int) -> Tuple[float, int, float, List[str]]:
     """
-    Calculate distance, total demand, and total time for a single route.
-    Returns: (distance, total_demand, total_time)
+    Calculate distance, total demand, total time for a single route and check constraints.
+    Returns: (distance, total_demand, total_time, constraint_violations)
     """
     if not route:
-        return 0.0, 0, 0.0
+        return 0.0, 0, 0.0, []
     
     # Add depot (0) at start and end
     full_route = [0] + route + [0]
+    constraint_violations = []
     
     # Calculate total distance
     total_distance = 0.0
@@ -120,13 +144,16 @@ def calculate_route_metrics(route: List[int], coordinates: Dict[int, Tuple[float
         coord_to = coordinates[to_customer]
         total_distance += calculate_distance(coord_from, coord_to)
     
-    # Calculate total demand (only for customers, not depot)
+    # Calculate total demand and check capacity constraint
     total_demand = sum(demands[customer] for customer in route)
+    if total_demand > vehicle_capacity:
+        constraint_violations.append(f"Capacity violation: {total_demand} > {vehicle_capacity}")
     
-    # Calculate total time (travel time + service time + waiting for time window start)
+    # Calculate total time and check time window constraints
     total_time = 0.0
     current_time = 0.0
     full_route = [0] + route + [0]
+    
     for i in range(len(full_route) - 1):
         from_customer = full_route[i]
         to_customer = full_route[i + 1]
@@ -135,26 +162,34 @@ def calculate_route_metrics(route: List[int], coordinates: Dict[int, Tuple[float
         travel_time = calculate_distance(coord_from, coord_to)
         current_time += travel_time
 
-        # For all customers except depot, add waiting time if arrival is before ready time
+        # For all customers except depot, check time window constraints
         if i + 1 < len(full_route) - 1:  # skip depot at end
-            ready_time = ready_times.get(to_customer, 0)  # Get actual ready time from data
+            ready_time = ready_times.get(to_customer, 0)
+            due_time = due_dates.get(to_customer, float('inf'))
+            
+            # Check if arrival is too late (after due time)
+            if current_time > due_time:
+                constraint_violations.append(f"Time window violation at customer {to_customer}: arrival {current_time/10:.1f} > due time {due_time/10:.1f}")
+            
+            # Wait if arrival is before ready time
             if current_time < ready_time:
                 current_time = ready_time  # Wait until time window opens
 
             current_time += service_times[to_customer]
         else:
-            # At depot, no service time
-            pass
+            # At depot, check if return time exceeds depot's latest time
+            if current_time > depot_due_time:
+                constraint_violations.append(f"Depot time violation: return time {current_time/10:.1f} > depot due time {depot_due_time/10:.1f}")
 
     total_time = current_time
     
-    return total_distance, total_demand, total_time
+    return total_distance, total_demand, total_time, constraint_violations
 
 def convert_solution_file(solution_file_path: str, data_file_path: str, output_file_path: str):
     """Convert a single solution file to the specified format."""
     
     # Read problem data
-    coordinates, demands, service_times, ready_times, due_dates = read_problem_data(data_file_path)
+    coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_ready_time, depot_due_time = read_problem_data(data_file_path)
     
     # Parse solution file
     routes, total_distance = parse_solution_file(solution_file_path)
@@ -162,14 +197,15 @@ def convert_solution_file(solution_file_path: str, data_file_path: str, output_f
     # Generate output
     output_lines = []
     calculated_total_distance = 0.0
+    total_violations = 0
     
     for i, route in enumerate(routes, 1):
         if not route:
             continue
             
-        # Calculate route metrics
-        route_distance, route_demand, route_time = calculate_route_metrics(
-            route, coordinates, demands, service_times, ready_times, due_dates
+        # Calculate route metrics and check constraints
+        route_distance, route_demand, route_time, violations = calculate_route_metrics(
+            route, coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_due_time
         )
         calculated_total_distance += route_distance
         
@@ -185,6 +221,17 @@ def convert_solution_file(solution_file_path: str, data_file_path: str, output_f
         output_lines.append(f"  Distance: {display_distance:.1f}")
         output_lines.append(f"  Total Demand: {route_demand}")
         output_lines.append(f"  Total Time: {display_time:.1f}")
+        
+        # Add constraint violation information
+        if violations:
+            total_violations += len(violations)
+            output_lines.append(f"  *** CONSTRAINT VIOLATIONS ***")
+            for violation in violations:
+                output_lines.append(f"    - {violation}")
+        else:
+            # output_lines.append(f"  Status: FEASIBLE")
+            pass
+        
         output_lines.append("")  # Empty line between routes
     
     # Add total distance
@@ -198,18 +245,26 @@ def convert_solution_file(solution_file_path: str, data_file_path: str, output_f
     for i, route in enumerate(routes, 1):
         if not route:
             continue
-        _, _, route_time = calculate_route_metrics(
-            route, coordinates, demands, service_times, ready_times, due_dates
+        _, _, route_time, _ = calculate_route_metrics(
+            route, coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_due_time
         )
         calculated_total_time += route_time
     display_total_time = calculated_total_time / 10
     output_lines.append(f"Total Time for All Vehicles: {display_total_time:.1f}")
     
+    # Add overall feasibility summary
+    output_lines.append("")
+    if total_violations == 0:
+        # output_lines.append("SOLUTION STATUS: FEASIBLE")
+        pass
+    else:
+        output_lines.append(f"SOLUTION STATUS: INFEASIBLE ({total_violations} constraint violations)")
+    
     # Write output file
     with open(output_file_path, 'w') as file:
         file.write('\n'.join(output_lines))
     
-    print(f"Converted {solution_file_path} -> {output_file_path}")
+    print(f"Converted {solution_file_path} -> {output_file_path} ({total_violations} violations)")
 
 def main():
     """Main function to convert all solution files."""
