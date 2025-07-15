@@ -122,7 +122,9 @@ Example:
 
 `python ./src/main.py data/homberger_200_customer_instances/C1_2_1.TXT --runtime 30`
 
+`python ./src/main.py data/homberger_200_customer_instances/C1_2_1.TXT --runtime 1800 --runs 10 --num_subproblems 2`
 
+`python ./src/main.py data/homberger_800_customer_instances/C1_8_1.TXT --runtime 1800 --runs 10 --num_subproblems 8`
 
 ## References
 
@@ -138,8 +140,9 @@ PyVRP:
 
 ## Questions
 
-- [ ] 计算精度：坐标间的欧几里得距离应该保留几位小数（Ours默认一位小数）？目前表格Distance比较没有意义。根据VRPTW.md文件示例输出，Distance**默认是一位小数**，主办方说没有计算精度限制（逆天），那我摆了，**直接一位小数**
+- [x] 计算精度：坐标间的欧几里得距离应该保留几位小数（Ours默认一位小数）？目前表格Distance比较没有意义。根据VRPTW.md文件示例输出，Distance**默认是一位小数**，主办方说没有计算精度限制（逆天），那我摆了，**直接一位截断小数**
 - [x] 读入文件处理：目前是粗糙地将Solomon格式转化为CVRPLIB格式读入，但是这种转换默认每个客户的SERVICE_TIME相同。后面**要做好更加规范严格的数据读入**。解决方案：重构PyVRP库里的read.py，使之支持读入Solomon格式Instance。
-- [x] 优化目标修改：目前是直接最小化Distance，因此：我要修改使得优先最小化车辆数，再最小化Distance。解决方案：将fixed_costs设置为1000
+- [x] 优化目标修改：目前是直接最小化Distance，因此：我要修改使得优先最小化车辆数，再最小化Distance。解决方案：将fixed_costs设置为10000
 - [x] 创新改进：分解策略 barycenter clustering decomposition + subproblem parallel computing with 8 CPU cores
 
+- [ ] 主办方服务器上测试算法
