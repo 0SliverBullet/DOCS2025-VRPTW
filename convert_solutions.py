@@ -270,8 +270,8 @@ def main():
     """Main function to convert all solution files."""
     
     # Define paths
-    solutions_dir = "solutions/unformatted_solutions"
-    output_dir = "solutions/formatted_solutions"
+    solutions_dir = "solutions/unformatted_solutions/results0716"
+    output_dir = "solutions/results0716"
     data_200_dir = "data/homberger_200_customer_instances"
     data_800_dir = "data/homberger_800_customer_instances"
     
@@ -298,7 +298,7 @@ def main():
             continue
         
         # Convert solution
-        output_path = os.path.join(output_dir, f"formatted_{solution_file}")
+        output_path = os.path.join(output_dir, f"{solution_file}")
         try:
             convert_solution_file(solution_path, data_path, output_path)
         except Exception as e:
