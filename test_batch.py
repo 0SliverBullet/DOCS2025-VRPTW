@@ -12,8 +12,8 @@ import glob
 
 def main():
     # 设置路径
-    data_dir = "data/homberger_200_customer_instances"
-    output_dir = "output/submission"
+    data_dir = "data/homberger_800_customer_instances"
+    output_dir = "output/results0716"
     src_main = "./src/main.py"
     
     # 确保输出目录存在
@@ -53,7 +53,9 @@ def main():
             txt_file,
             "--runtime", "1800",
             "--runs", "10",
-            "--num_subproblems", "2"
+            "--num_subproblems", "8",
+            "--decomposition_freq", "1500",
+            "--subproblem_iters", "2000"
         ]
         
         try:

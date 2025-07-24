@@ -270,8 +270,8 @@ def main():
     """Main function to convert all solution files."""
     
     # Define paths
-    solutions_dir = "solutions/unformatted_solutions/results0716"
-    output_dir = "solutions/results0716"
+    solutions_dir = "solutions/unformatted_solutions/results0724"
+    output_dir = "solutions/results0724"
     data_200_dir = "data/homberger_200_customer_instances"
     data_800_dir = "data/homberger_800_customer_instances"
     

@@ -2,7 +2,9 @@
 
 Team: Route Seekers
 
-## Experimental results
+## Experimental Results
+
+<!--
 
 - 200-customer Instances [2025/06/19]
 
@@ -92,7 +94,9 @@ Note: time in seconds.
 | [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |    23990.70     |       72.00 $\pm$ 0.00        |     24252.49 $\pm$ 232.85     |    1800     |
 | [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |                 |                 |                               |                               |             |
 
-- Submission Results：[2025/07/15]
+-->
+
+- 初赛结果提交[2025/07/24]：具体路径信息放在文件夹 `solutions/results0724`
 
 |                           Instance                           | Vehicles (Ours) | Distance (Ours) | Duration (Ours) | Time (Ours) |
 | :----------------------------------------------------------: | :-------------: | :-------------: | :-------------: | :---------: |
@@ -102,10 +106,12 @@ Note: time in seconds.
 | [c1_2_4](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_4.18_2643.31.txt) |       18        |     2637.2      |     21004.9     |    1800     |
 | [c1_2_5](https://www.sintef.no/contentassets/67388a7eea5c43cca4f52312c0688142/c1_2_5.txt) |       20        |     2694.9      |     20764.9     |    1800     |
 |                            c1_8_1                            |       80        |     25156.9     |     97704.1     |    1800     |
-| [c1_8_2](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_2-72-26540.53.txt) |       74        |     25501.7     |     99516.8     |    1800     |
+| [c1_8_2](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_2-72-26540.53.txt) |       73        |     25912.8     |     100051.9     |    1800     |
 | [c1_8_3](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_3.72_24242.49.txt) |       72        |     24280.5     |     99689.2     |    1800     |
-| [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |     23884.6     |    101056.1     |    1800     |
+| [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |     23824.9     |    101451.4     |    1800     |
 | [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |       80        |     25138.6     |     97786.1     |    1800     |
+
+![初赛验证结果](./images/validation.png)
 
 ## Environments
 
@@ -118,11 +124,9 @@ Note: time in seconds.
 
 ## How to Start?
 
-`python ./src/main.py <Instance file path> --runtime <Maxtime>`
+`python ./src/main.py <Instance file path> --runtime <Maxtime> --runs <Maxrun> --num_subproblems <Numsubproblem>`
 
 Example:
-
-`python ./src/main.py data/homberger_200_customer_instances/C1_2_1.TXT --runtime 30`
 
 `python ./src/main.py data/homberger_200_customer_instances/C1_2_1.TXT --runtime 1800 --runs 10 --num_subproblems 2`
 
@@ -138,13 +142,14 @@ BKS:
 
 PyVRP:
 
+- `[PyVRP v0.11.3]` Open-source, state-of-the-art vehicle routing problem solver in an easy-to-use Python package: [https://github.com/PyVRP/PyVRP](https://github.com/PyVRP/PyVRP)
+
 
 
 ## Questions
 
-- [x] 计算精度：坐标间的欧几里得距离应该保留几位小数（Ours默认一位小数）？目前表格Distance比较没有意义。根据VRPTW.md文件示例输出，Distance**默认是一位小数**，主办方在微信群 [2025/07/08] 最新通知是**直接一位截断小数**
+- [x] 计算精度：坐标间的欧几里得距离应该保留几位小数（Ours默认一位小数）？目前表格Distance比较没有意义。根据VRPTW.md文件示例输出，Distance**默认是一位截断小数**，主办方在微信群 [2025/07/08] 通知是**直接一位截断小数**, [2025/07/16] 通知是**初赛一位小数或者两位小数皆可，决赛会注意**
 - [x] 读入文件处理：目前是粗糙地将Solomon格式转化为CVRPLIB格式读入，但是这种转换默认每个客户的SERVICE_TIME相同。后面**要做好更加规范严格的数据读入**。解决方案：重构PyVRP库里的read.py，使之支持读入Solomon格式Instance。
 - [x] 优化目标修改：目前是直接最小化Distance，因此：我要修改使得优先最小化车辆数，再最小化Distance。解决方案：将fixed_costs设置为10000
-- [x] 创新改进：分解策略 barycenter clustering decomposition + subproblem parallel computing with 8 CPU cores
-
+- [x] 创新改进：分解策略。具体来说最大程度利用并行，每10s同步一次然后把最优解同步，然后连续5次同步没有改进的话就分解改进，然后把最优解插入 masterproblem parallel computing with 8 CPU cores + barycenter clustering decomposition + subproblem parallel computing with 8 CPU cores 
 - [ ] 主办方服务器上测试算法：正在进行
