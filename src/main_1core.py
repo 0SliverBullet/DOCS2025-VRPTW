@@ -1,6 +1,7 @@
 """
 Copyright (c) 2025, the Route Seeker developers.
 Members of the Route Seeker developers include:
+- Haoze Lv <12232421@mail.sustech.edu.cn>
 - Zubin Zheng <zhengzb2021@mail.sustech.edu.cn>
 All rights reserved.
 This file is part of Route Seeker, a Python Program for solving Vehicle Routing Problems with Time Windows.

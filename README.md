@@ -18,8 +18,8 @@ Team: Route Seekers
   | [c1_8_3](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_3.72_24242.49.txt) |       72        |     24280.5     |     99689.2     |    1800     |      4      |
   | [c1_8_4](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_4-23824-17-sintef.txt) |       72        |     23824.9     |    101451.4     |    1800     |      3      |
   | [c1_8_5](https://www.sintef.no/contentassets/7951fb4f7ba04b7580ddcd23bd532cc1/c1_8_5.25166.28.sintef.txt) |       80        |     25138.6     |     97786.1     |    1800     |      4      |
-
-![初赛验证结果](./images/validation.png)
+  
+  ![初赛验证结果](./images/validation.png)
 
 - 复赛结果提交：
 
