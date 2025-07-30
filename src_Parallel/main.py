@@ -1,6 +1,7 @@
 """
 Copyright (c) 2025, the Route Seeker developers.
 Members of the Route Seeker developers include:
+- Haoze Lv <12232421@mail.sustech.edu.cn>
 - Zubin Zheng <zhengzb2021@mail.sustech.edu.cn>
 All rights reserved.
 This file is part of Route Seeker, a Python Program for solving Vehicle Routing Problems with Time Windows.
@@ -53,7 +54,8 @@ if __name__ == "__main__":
         args.instance_path, 
         instance_format="solomon", 
         # round_func="exact"
-        round_func="dimacs"
+        # round_func="dimacs"
+        round_func="docs"
     )
     
     # 检查是否启用并行模式
@@ -119,10 +121,10 @@ if __name__ == "__main__":
             
             # 检查是否有可行解
             if result.best and result.best.is_feasible():
-                distance = round(result.best.distance() / 10, 1)
+                distance = round(result.best.distance() / 100, 2)
                 vehicle_count = result.best.num_routes()
-                duration = round(result.best.duration() / 10, 1)
-                print(f"Found a solution with # vehicles: {vehicle_count}, distance: {distance:.1f}, duration: {duration:.1f}.")
+                duration = round(result.best.duration() / 100, 2)
+                print(f"Found a solution with # vehicles: {vehicle_count}, distance: {distance:.2f}, duration: {duration:.2f}.")
                 print(f"Run time: {run_time:.2f} seconds")
                 
                 # 收集统计数据
@@ -153,9 +155,9 @@ if __name__ == "__main__":
         print(f"Feasible solutions found: {feasible_runs}")
         
         if best_result is not None:
-            best_distance = round(best_result.best.distance() / 10, 1)
-            best_duration = round(best_result.best.duration() / 10, 1)
-            
+            best_distance = round(best_result.best.distance() / 100, 2)
+            best_duration = round(best_result.best.duration() / 100, 2)
+
             # 输出统计信息
             if args.runs > 1:
                 print(f"\nStatistics over {args.runs} parallel runs:")
@@ -172,8 +174,8 @@ if __name__ == "__main__":
                     # 距离统计
                     avg_distance = statistics.mean(all_distances)
                     std_distance = statistics.stdev(all_distances) if len(all_distances) > 1 else 0.0
-                    print(f"  Distance - Mean: {avg_distance:.1f}, Std Dev: {std_distance:.1f}")
-                    print(f"  Distance - Min: {min(all_distances):.1f}, Max: {max(all_distances):.1f}")
+                    print(f"  Distance - Mean: {avg_distance:.2f}, Std Dev: {std_distance:.2f}")
+                    print(f"  Distance - Min: {min(all_distances):.2f}, Max: {max(all_distances):.2f}")
                     
                     # 车辆数统计
                     avg_vehicles = statistics.mean(all_vehicle_counts)
@@ -184,8 +186,8 @@ if __name__ == "__main__":
                     # 时间统计
                     avg_duration = statistics.mean(all_durations)
                     std_duration = statistics.stdev(all_durations) if len(all_durations) > 1 else 0.0
-                    print(f"  Duration - Mean: {avg_duration:.1f}, Std Dev: {std_duration:.1f}")
-                    print(f"  Duration - Min: {min(all_durations):.1f}, Max: {max(all_durations):.1f}")
+                    print(f"  Duration - Mean: {avg_duration:.2f}, Std Dev: {std_duration:.2f}")
+                    print(f"  Duration - Min: {min(all_durations):.2f}, Max: {max(all_durations):.2f}")
                 elif feasible_runs == 1:
                     print(f"\nOnly one feasible solution found, no solution quality statistics to compute.")
             else:
@@ -193,8 +195,8 @@ if __name__ == "__main__":
             
             print(f"\nBest solution found over {args.runs} parallel runs:")
             print(f"  Vehicles: {best_result.best.num_routes()}")
-            print(f"  Distance: {best_distance:.1f}")
-            print(f"  Duration: {best_duration:.1f}")
+            print(f"  Distance: {best_distance:.2f}")
+            print(f"  Duration: {best_duration:.2f}")
             # 输出最佳解的详细信息和路径
             print(f"\n" + "="*60)
             print("BEST SOLUTION DETAILS:")
@@ -257,10 +259,10 @@ if __name__ == "__main__":
         
         # 检查是否有可行解
         if result.best.is_feasible():
-            distance = round(result.best.distance() / 10, 1)
+            distance = round(result.best.distance() / 100, 2)
             vehicle_count = result.best.num_routes()
-            duration = round(result.best.duration() / 10, 1)  
-            print(f"Found a solution with # vehicles: {vehicle_count}, distance: {distance:.1f}, duration: {duration:.1f}.")
+            duration = round(result.best.duration() / 100, 2)
+            print(f"Found a solution with # vehicles: {vehicle_count}, distance: {distance:.2f}, duration: {duration:.2f}.")
             print(f"Run time: {run_time:.2f} seconds")
             
             # 收集统计数据
@@ -284,11 +286,9 @@ if __name__ == "__main__":
     print(f"Feasible solutions found: {feasible_runs}")
     
     if best_result is not None:
-        best_distance = round(best_result.best.distance() / 10, 1)
-        best_duration = round(best_result.best.duration() / 10, 1)
-        
+        best_distance = round(best_result.best.distance() / 100, 2)
+        best_duration = round(best_result.best.duration() / 100, 2)
 
-        
         # 输出统计信息
         if args.runs > 1:
             print(f"\nStatistics over {args.runs} runs:")
@@ -305,8 +305,8 @@ if __name__ == "__main__":
                 # 距离统计
                 avg_distance = statistics.mean(all_distances)
                 std_distance = statistics.stdev(all_distances) if len(all_distances) > 1 else 0.0
-                print(f"  Distance - Mean: {avg_distance:.1f}, Std Dev: {std_distance:.1f}")
-                print(f"  Distance - Min: {min(all_distances):.1f}, Max: {max(all_distances):.1f}")
+                print(f"  Distance - Mean: {avg_distance:.2f}, Std Dev: {std_distance:.2f}")
+                print(f"  Distance - Min: {min(all_distances):.2f}, Max: {max(all_distances):.2f}")
                 
                 # 车辆数统计
                 avg_vehicles = statistics.mean(all_vehicle_counts)
@@ -317,8 +317,8 @@ if __name__ == "__main__":
                 # 时间统计
                 avg_duration = statistics.mean(all_durations)
                 std_duration = statistics.stdev(all_durations) if len(all_durations) > 1 else 0.0
-                print(f"  Duration - Mean: {avg_duration:.1f}, Std Dev: {std_duration:.1f}")
-                print(f"  Duration - Min: {min(all_durations):.1f}, Max: {max(all_durations):.1f}")
+                print(f"  Duration - Mean: {avg_duration:.2f}, Std Dev: {std_duration:.2f}")
+                print(f"  Duration - Min: {min(all_durations):.2f}, Max: {max(all_durations):.2f}")
             elif feasible_runs == 1:
                 print(f"\nOnly one feasible solution found, no solution quality statistics to compute.")
         else:
@@ -327,8 +327,8 @@ if __name__ == "__main__":
 
         print(f"\nBest solution found over {args.runs} runs:")
         print(f"  Vehicles: {best_result.best.num_routes()}")
-        print(f"  Distance: {best_distance:.1f}")
-        print(f"  Duration: {best_duration:.1f}")
+        print(f"  Distance: {best_distance:.2f}")
+        print(f"  Duration: {best_duration:.2f}")
         # 输出最佳解的详细信息和路径
         print(f"\n" + "="*60)
         print("BEST SOLUTION DETAILS:")

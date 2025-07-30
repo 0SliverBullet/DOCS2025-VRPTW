@@ -124,9 +124,9 @@ def save_parallel_results(args, result: Union[Result, object], synchronizer: Uni
     
     # 添加最佳解信息
     if result and result.best:
-        best_distance = round(result.best.distance() / 10, 1)
-        best_duration = round(result.best.duration() / 10, 1)
-        
+        best_distance = round(result.best.distance() / 100, 2)
+        best_duration = round(result.best.duration() / 100, 2)
+
         result_data["best_solution"] = {
             "vehicles": result.best.num_routes(),
             "distance": best_distance,
@@ -142,8 +142,8 @@ def save_parallel_results(args, result: Union[Result, object], synchronizer: Uni
             route_info = {
                 "route_id": i + 1,
                 "visits": list(route.visits()),
-                "distance": round(route.distance() / 10, 1),
-                "duration": round(route.duration() / 10, 1),
+                "distance": round(route.distance() / 100, 1),
+                "duration": round(route.duration() / 100, 1),
                 "start_time": route.start_time(),
                 "end_time": route.end_time()
             }
@@ -240,7 +240,7 @@ def save_parallel_results(args, result: Union[Result, object], synchronizer: Uni
             
             f.write(f"路径详情:\n")
             for i, route in enumerate(result.best.routes()):
-                f.write(f"  路径 {i+1}: {list(route.visits())} (距离: {route.distance()/10:.1f})\n")
+                f.write(f"  路径 {i+1}: {list(route.visits())} (距离: {route.distance()/100:.2f})\n")
         else:
             f.write(f"未找到可行解\n")
     
@@ -350,7 +350,7 @@ def create_results_summary(instance_name: str, results_dir: str):
                 sync_count = data['synchronization_statistics'].get('total_synchronizations', 0)
                 improvements = data['synchronization_statistics'].get('total_improvements', 0)
                 
-                f.write(f"| {timestamp} | {vehicles} | {distance} | {runtime:.1f}s | {strategies} | {sync_count} | {improvements} |\n")
+                f.write(f"| {timestamp} | {vehicles} | {distance} | {runtime:.2f}s | {strategies} | {sync_count} | {improvements} |\n")
                 
             except Exception as e:
                 print(f"Warning: Failed to process {json_file}: {e}")

@@ -357,7 +357,7 @@ class StrategyWorker:
                             # Only consider feasible solutions for avg_feasible_cost
                             if solution.is_feasible():
                                 # For feasible solutions, use only distance as simplified cost
-                                feasible_cost = solution.distance() / 10
+                                feasible_cost = solution.distance() / 100
                                 feasible_costs.append(feasible_cost)
                     
                     # Calculate averages
@@ -372,7 +372,7 @@ class StrategyWorker:
                 # If population cost calculation fails, use best solution cost as fallback
                 if self.current_best and self.current_best.is_feasible():
                     try:
-                        avg_feasible_cost = self.current_best.distance() / 10
+                        avg_feasible_cost = self.current_best.distance() / 100
                         feasible_population_count = 1
                     except:
                         avg_feasible_cost = 0.0
@@ -494,7 +494,7 @@ class ParallelMultiStrategyHGS:
                 current_time = time.time() - self.start_time
                 
                 if display:
-                    print(f"Running synchronization {sync_count}, total time: {current_time:.1f}s")
+                    print(f"Running synchronization {sync_count}, total time: {current_time:.2f}s")
                 
                 # Wait for sync interval
                 time.sleep(10.0)  # Sync every 2 seconds
@@ -607,7 +607,7 @@ class ParallelMultiStrategyHGS:
                     print("Decomposition clustering failed - counter not reset, will retry sooner")
 
                 if improved_solution:
-                    print(f"Improved solution: {improved_solution.num_routes()}v {improved_solution.distance()/10:.1f}d {improved_solution.duration()/10:.1f}t")
+                    print(f"Improved solution: {improved_solution.num_routes()}v {improved_solution.distance()/100:.2f}d {improved_solution.duration()/100:.2f}t")
                     # Update the sync result with improved solution
                     sync_result.global_best_solution = improved_solution
                     sync_result.improvement_found = True
@@ -645,7 +645,7 @@ class ParallelMultiStrategyHGS:
             # Found improvement - reset counter
             self.syncs_without_improvement = 0
             vehicles, distance, duration = get_solution_metrics(current_solution)
-            print(f"New global best found! Vehicles: {vehicles}, Distance: {distance/10:.1f}, Duration: {duration/10:.1f}, counter reset.")
+            print(f"New global best found! Vehicles: {vehicles}, Distance: {distance/100:.2f}, Duration: {duration/100:.2f}, counter reset.")
             return False  # Don't decompose when we just found improvement
         else:
             # No improvement - increment counter
@@ -791,8 +791,8 @@ class ParallelMultiStrategyHGS:
             
             start_time = time.time()
 
-            print(f"Before decomposition: {solution.distance()/10:.1f}")
-            
+            print(f"Before decomposition: {solution.distance()/100:.2f}")
+
             # Step 1: Decompose the solution into subproblems with aggressive timeout and retry
             print("Attempting clustering decomposition with process-level timeout...")
             subproblems, subproblem_mappings = self._safe_clustering_decomposition(
@@ -877,22 +877,22 @@ class ParallelMultiStrategyHGS:
             
             print(f"Calling _improve_offspring on decomposed solution from {best_worker.strategy_config.strategy_name} strategy")
             
-            decomposed_solution_cost = decomposed_solution.distance()/10
+            decomposed_solution_cost = decomposed_solution.distance()/100
             
             # Call _improve_offspring with the decomposed solution
             genetic_algo._improve_offspring(decomposed_solution, from_decomposition=True)
 
-            improved_solution_cost = decomposed_solution.distance()/10
+            improved_solution_cost = decomposed_solution.distance()/100
             
             # Get the potentially improved solution
             improved_solution = genetic_algo._best
             
             # Restore the original best if the new one isn't better than our original
             if decomposed_solution_cost > improved_solution_cost:
-                print(f"Decomposed solution is better than improved solution! {decomposed_solution_cost:.1f} > {improved_solution_cost:.1f}")
+                print(f"Decomposed solution is better than improved solution! {decomposed_solution_cost:.2f} > {improved_solution_cost:.2f}")
                 return decomposed_solution
             else:
-                print(f"Improved solution is better than decomposed solution! {improved_solution_cost:.1f} > {decomposed_solution_cost:.1f}")
+                print(f"Improved solution is better than decomposed solution! {improved_solution_cost:.2f} > {decomposed_solution_cost:.2f}")
                 return improved_solution
         
         except Exception as e:
@@ -1077,8 +1077,8 @@ class ParallelMultiStrategyHGS:
             solution = best_result.best
             print(f"Best solution found:")
             print(f"  Vehicles: {solution.num_routes()}")
-            print(f"  Distance: {solution.distance() / 10:.1f}")
-            print(f"  Duration: {solution.duration() / 10:.1f}")
+            print(f"  Distance: {solution.distance() / 100:.2f}")
+            print(f"  Duration: {solution.duration() / 100:.2f}")
             print(f"  Feasible: {solution.is_feasible()}")
         else:
             print("No feasible solution found.")

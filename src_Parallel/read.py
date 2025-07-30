@@ -49,6 +49,7 @@ ROUND_FUNCS: dict[str, _RoundingFunc] = {
     "round": lambda vals: np.round(vals).astype(np.int64),
     "trunc": lambda vals: vals.astype(np.int64),
     "dimacs": lambda vals: (10 * vals).astype(np.int64),
+    "docs": lambda vals: np.round(1_00 * vals).astype(np.int64),
     "exact": lambda vals: np.round(1_000 * vals).astype(np.int64),
     "none": lambda vals: vals,
 }
@@ -84,6 +85,7 @@ def read_instance(
             * ``'round'`` rounds the values to the nearest integer;
             * ``'trunc'`` truncates the values to an integer;
             * ``'dimacs'`` scales by 10 and truncates the values to an integer;
+            * ``'docs'`` scales by 100 and rounds to the nearest integer;
             * ``'exact'`` scales by 1000 and rounds to the nearest integer.
             * ``'none'`` does no rounding. This is the default.
 

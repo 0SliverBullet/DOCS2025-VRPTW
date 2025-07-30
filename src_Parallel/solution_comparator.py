@@ -126,7 +126,7 @@ def format_solution_summary(solution: Optional[Solution]) -> str:
     vehicles, distance, duration = get_solution_metrics(solution)
     feasible = solution.is_feasible()
     
-    return f"{vehicles}v, {distance/10:.1f}d, {duration/10:.1f}t, feasible: {feasible}"
+    return f"{vehicles}v, {distance/100:.2f}d, {duration/100:.2f}t, feasible: {feasible}"
 
 
 class SolutionTracker:

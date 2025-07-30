@@ -207,8 +207,8 @@ class SolutionSynchronizer:
         # Calculate solution metrics
         is_feasible = solution.is_feasible()
         vehicles = solution.num_routes()
-        distance = round(solution.distance() / 10, 1)
-        duration = round(solution.duration() / 10, 1)
+        distance = round(solution.distance() / 100, 2)
+        duration = round(solution.duration() / 100, 2)
         # Calculate cost - PyVRP Solution doesn't have cost() method
         if is_feasible:
             cost = distance + duration  # Use distance + duration as cost approximation
@@ -398,7 +398,7 @@ class SolutionSynchronizer:
             merged_solution = Solution(self.data, new_routes)
             
             print(f"Merged solution: {merged_solution.num_routes()} routes, "
-                  f"distance: {merged_solution.distance() / 10:.1f}, "
+                  f"distance: {merged_solution.distance() / 100:.2f}, "
                   f"feasible: {merged_solution.is_feasible()}")
             
             return merged_solution
@@ -455,8 +455,8 @@ class SolutionSynchronizer:
         
         stats = sync_result.global_best_stats
         print(f"Best Solution: {stats.best_vehicles} vehicles, "
-              f"distance: {stats.best_distance:.1f}, "
-              f"duration: {stats.best_duration:.1f}")
+              f"distance: {stats.best_distance:.2f}, "
+              f"duration: {stats.best_duration:.2f}")
         print(f"Feasible: {stats.is_feasible}")
         
         if sync_result.improvement_found:
@@ -474,13 +474,13 @@ class SolutionSynchronizer:
             status = "BEST" if stats.strategy_id == sync_result.global_best_strategy_id else "    "
             if stats.feasible_population_count > 0:
                 print(f"{status} {stats.strategy_name}: "
-                      f"{stats.best_vehicles}v, {stats.best_distance:.1f}d, "
+                      f"{stats.best_vehicles}v, {stats.best_distance:.2f}d, "
                       f"feasible: {stats.is_feasible}, "
-                      f"avg_distance: {stats.avg_feasible_cost:.1f} "
+                      f"avg_distance: {stats.avg_feasible_cost:.2f} "
                       f"({stats.feasible_population_count} feasible)")
             else:
                 print(f"{status} {stats.strategy_name}: "
-                      f"{stats.best_vehicles}v, {stats.best_distance:.1f}d, "
+                      f"{stats.best_vehicles}v, {stats.best_distance:.2f}d, "
                       f"feasible: {stats.is_feasible}, "
                       f"avg_distance: N/A (no feasible solutions)")
         
