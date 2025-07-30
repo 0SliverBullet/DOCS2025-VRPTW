@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 批量测试脚本
-按顺序测试 data/homberger_800_customer_instances 文件夹下的所有样例
+按顺序测试 data/homberger_200_customer_instances 文件夹下的所有样例
 """
 
 import os
@@ -12,15 +12,15 @@ import glob
 
 def main():
     # 设置路径
-    data_dir = "data/homberger_800_customer_instances"
-    output_dir = "output/results0716"
+    data_dir = "data/homberger_200_customer_instances"
+    output_dir = "output/results0730"
     src_main = "./src/main.py"
     
     # 确保输出目录存在
     os.makedirs(output_dir, exist_ok=True)
     
     # 获取所有.TXT文件并按名称排序
-    pattern = os.path.join(data_dir, "*.TXT")
+    pattern = os.path.join(data_dir, "*.txt")
     all_txt_files = sorted(glob.glob(pattern))
     
     # 过滤掉以_1.TXT和_5.TXT结尾的文件
@@ -28,7 +28,7 @@ def main():
     txt_files = [f for f in all_txt_files]
     
     if not all_txt_files:
-        print(f"在 {data_dir} 中未找到.TXT文件")
+        print(f"在 {data_dir} 中未找到.txt文件")
         return
     
     # skipped_files = [f for f in all_txt_files if f.endswith("_1.TXT") or f.endswith("_5.TXT")]
@@ -53,7 +53,7 @@ def main():
             txt_file,
             "--runtime", "1800",
             "--runs", "10",
-            "--num_subproblems", "8",
+            "--num_subproblems", "2",
             "--decomposition_freq", "1500",
             "--subproblem_iters", "2000"
         ]
