@@ -54,9 +54,11 @@ def load_instance(filename, decimal_places=None):
             x2, y2 = coords[j]
             distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
             if decimal_places is not None:
-                # distance = round(distance, decimal_places)
+                # 复赛
+                distance = round(distance, decimal_places) 
+                # 初赛
                 # 【修改点】将 round() 替换为 truncate()
-                distance = truncate(distance, decimal_places)
+                # distance = truncate(distance, decimal_places)
             time_matrix[i][j] = distance
             time_matrix[j][i] = distance
     
@@ -201,14 +203,14 @@ def validate_solution(data, routes):
 if __name__ == "__main__":
     # DATA_FILES 列表保持不变
     DATA_FILES = [
-        "C1_2_1.TXT", "C1_2_2.TXT", "C1_2_3.TXT", "C1_2_4.TXT", "C1_2_5.TXT",
-        "C1_8_1.TXT", "C1_8_2.TXT", "C1_8_3.TXT", "C1_8_4.TXT", "C1_8_5.TXT"
+        "RC1_2_1.txt", "RC1_2_2.txt", "RC1_2_3.txt", "RC1_2_4.txt", "RC1_2_5.txt",
+        "RC1_4_1.txt", "RC1_4_2.txt", "RC1_4_3.txt", "RC1_4_4.txt", "RC1_4_5.txt"
     ]
     
     # 【第1步：新增】定义所有可能存放数据文件的目录
     DATA_DIRECTORIES = [
         "data/homberger_200_customer_instances",
-        "data/homberger_800_customer_instances"
+        "data/homberger_400_customer_instances"
     ]
     
     for data_file in DATA_FILES:
@@ -230,12 +232,12 @@ if __name__ == "__main__":
         # 现在 found_path 就是正确的路径，可能是200目录也可能是800目录
         # 使用这个找到的路径来加载实例
         data_path = found_path
-        instance_data = load_instance(data_path, decimal_places=1)
+        instance_data = load_instance(data_path, decimal_places=2)  # 使用2位小数精度
         
         base_name, ext = os.path.splitext(data_file)
         sol_filename = base_name + ".txt" # 直接指定小写 .txt
         
-        sol_path = os.path.join("solutions/results0724", sol_filename)
+        sol_path = os.path.join("solutions/results0730", sol_filename)
 
         if not os.path.exists(sol_path):
             print(f"结果文件不存在: {sol_path}")

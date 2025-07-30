@@ -11,7 +11,7 @@ from typing import List, Tuple, Dict
 def read_problem_data(data_file_path: str) -> Tuple[Dict[int, Tuple[float, float]], Dict[int, int], Dict[int, int], Dict[int, int], Dict[int, int], int, int, int]:
     """
     Read problem data file and extract coordinates, demands, service times, time windows, and vehicle info.
-    Apply DIMACS scaling (multiply coordinates and times by 10) to match the solver's format.
+    Apply DOCS scaling (multiply coordinates and times by 100) to match the solver's format.
     Returns: (coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_ready_time, depot_due_time)
     """
     coordinates = {}  # customer_id -> (x, y)
@@ -60,12 +60,12 @@ def read_problem_data(data_file_path: str) -> Tuple[Dict[int, Tuple[float, float
         parts = line.split()
         if len(parts) >= 7:
             cust_no = int(parts[0])
-            x_coord = float(parts[1]) * 10  # Apply DIMACS scaling
-            y_coord = float(parts[2]) * 10  # Apply DIMACS scaling
+            x_coord = float(parts[1]) * 100  # Apply DOCS scaling
+            y_coord = float(parts[2]) * 100  # Apply DOCS scaling
             demand = int(parts[3])
-            ready_time = int(parts[4]) * 10  # Apply DIMACS scaling for time window start
-            due_date = int(parts[5]) * 10    # Apply DIMACS scaling for time window end
-            service_time = int(parts[6]) * 10  # Apply DIMACS scaling for service time
+            ready_time = int(parts[4]) * 100  # Apply DOCS scaling for time window start
+            due_date = int(parts[5]) * 100    # Apply DOCS scaling for time window end
+            service_time = int(parts[6]) * 100  # Apply DOCS scaling for service time
             
             coordinates[cust_no] = (x_coord, y_coord)
             demands[cust_no] = demand
@@ -80,9 +80,18 @@ def read_problem_data(data_file_path: str) -> Tuple[Dict[int, Tuple[float, float
     
     return coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_ready_time, depot_due_time
 
+# def calculate_distance(coord1: Tuple[float, float], coord2: Tuple[float, float]) -> int:
+#     """Calculate Euclidean distance between two coordinates, return as int (truncated)."""
+#     return int(math.sqrt((coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2))
+
 def calculate_distance(coord1: Tuple[float, float], coord2: Tuple[float, float]) -> int:
-    """Calculate Euclidean distance between two coordinates, return as int (truncated)."""
-    return int(math.sqrt((coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2))
+    """计算两个坐标点之间的欧氏距离，结果四舍五入后返回整数。"""
+    # 首先，计算出带有小数的精确距离
+    distance = math.sqrt((coord1[0] - coord2[0])**2 + (coord1[1] - coord2[1])**2)
+    
+    # 然后，使用 round() 函数进行四舍五入，并返回结果
+    return round(distance)
+
 
 def parse_solution_file(solution_file_path: str) -> Tuple[List[List[int]], float]:
     """
@@ -169,8 +178,8 @@ def calculate_route_metrics(route: List[int], coordinates: Dict[int, Tuple[float
             
             # Check if arrival is too late (after due time)
             if current_time > due_time:
-                constraint_violations.append(f"Time window violation at customer {to_customer}: arrival {current_time/10:.1f} > due time {due_time/10:.1f}")
-            
+                constraint_violations.append(f"Time window violation at customer {to_customer}: arrival {current_time/100:.2f} > due time {due_time/100:.2f}")
+
             # Wait if arrival is before ready time
             if current_time < ready_time:
                 current_time = ready_time  # Wait until time window opens
@@ -179,7 +188,7 @@ def calculate_route_metrics(route: List[int], coordinates: Dict[int, Tuple[float
         else:
             # At depot, check if return time exceeds depot's latest time
             if current_time > depot_due_time:
-                constraint_violations.append(f"Depot time violation: return time {current_time/10:.1f} > depot due time {depot_due_time/10:.1f}")
+                constraint_violations.append(f"Depot time violation: return time {current_time/100:.2f} > depot due time {depot_due_time/100:.2f}")
 
     total_time = current_time
     
@@ -211,16 +220,16 @@ def convert_solution_file(solution_file_path: str, data_file_path: str, output_f
         
         # Format route output
         customers_str = " -> ".join(["0"] + [str(c) for c in route] + ["0"])
-        
-        # Convert back from DIMACS format for display (divide by 10)
-        display_distance = route_distance / 10
-        display_time = route_time / 10
+
+        # Convert back from DOCS format for display (divide by 100)
+        display_distance = route_distance / 100
+        display_time = route_time / 100
         
         output_lines.append(f"Route for Vehicle {i}:")
         output_lines.append(f"  Customers: {customers_str}")
-        output_lines.append(f"  Distance: {display_distance:.1f}")
+        output_lines.append(f"  Distance: {display_distance:.2f}")
         output_lines.append(f"  Total Demand: {route_demand}")
-        output_lines.append(f"  Total Time: {display_time:.1f}")
+        output_lines.append(f"  Total Time: {display_time:.2f}")
         
         # Add constraint violation information
         if violations:
@@ -236,9 +245,9 @@ def convert_solution_file(solution_file_path: str, data_file_path: str, output_f
     
     # Add total distance
     # Use the calculated total distance (more accurate than parsing from file)
-    # Convert back from DIMACS format for display (divide by 10)
-    display_total_distance = calculated_total_distance / 10
-    output_lines.append(f"Total Distance for All Vehicles: {display_total_distance:.1f}")
+    # Convert back from DOCS format for display (divide by 100)
+    display_total_distance = calculated_total_distance / 100
+    output_lines.append(f"Total Distance for All Vehicles: {display_total_distance:.2f}")
 
     # Also compute and output total time for all vehicles
     calculated_total_time = 0.0
@@ -249,8 +258,8 @@ def convert_solution_file(solution_file_path: str, data_file_path: str, output_f
             route, coordinates, demands, service_times, ready_times, due_dates, vehicle_capacity, depot_due_time
         )
         calculated_total_time += route_time
-    display_total_time = calculated_total_time / 10
-    output_lines.append(f"Total Time for All Vehicles: {display_total_time:.1f}")
+    display_total_time = calculated_total_time / 100
+    output_lines.append(f"Total Time for All Vehicles: {display_total_time:.2f}")
     
     # Add overall feasibility summary
     output_lines.append("")
@@ -270,8 +279,8 @@ def main():
     """Main function to convert all solution files."""
     
     # Define paths
-    solutions_dir = "solutions/unformatted_solutions/results0724"
-    output_dir = "solutions/results0724"
+    solutions_dir = "solutions/unformatted_solutions/results0730"
+    output_dir = "solutions/results0730"
     data_200_dir = "data/homberger_200_customer_instances"
     data_800_dir = "data/homberger_800_customer_instances"
     
