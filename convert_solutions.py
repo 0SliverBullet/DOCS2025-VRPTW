@@ -282,7 +282,7 @@ def main():
     solutions_dir = "solutions/unformatted_solutions/results0730"
     output_dir = "solutions/results0730"
     data_200_dir = "data/homberger_200_customer_instances"
-    data_800_dir = "data/homberger_800_customer_instances"
+    data_400_dir = "data/homberger_400_customer_instances"
     
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
@@ -300,7 +300,7 @@ def main():
         # Check in 200 customer instances first, then 800
         data_path = os.path.join(data_200_dir, data_file)
         if not os.path.exists(data_path):
-            data_path = os.path.join(data_800_dir, data_file)
+            data_path = os.path.join(data_400_dir, data_file)
         
         if not os.path.exists(data_path):
             print(f"Warning: Could not find data file for {solution_file}")
