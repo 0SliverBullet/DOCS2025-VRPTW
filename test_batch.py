@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 批量测试脚本
-按顺序测试 data/homberger_200_customer_instances 文件夹下的所有样例
+按顺序测试 data/homberger_400_customer_instances 文件夹下的所有样例
 """
 
 import os
@@ -12,7 +12,7 @@ import glob
 
 def main():
     # 设置路径
-    data_dir = "data/homberger_200_customer_instances"
+    data_dir = "data/homberger_400_customer_instances"
     output_dir = "output/results0730"
     src_main = "./src/main.py"
     
@@ -53,7 +53,7 @@ def main():
             txt_file,
             "--runtime", "1800",
             "--runs", "10",
-            "--num_subproblems", "2",
+            "--num_subproblems", "4",
             "--decomposition_freq", "1500",
             "--subproblem_iters", "2000"
         ]
