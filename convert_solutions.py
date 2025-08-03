@@ -279,8 +279,8 @@ def main():
     """Main function to convert all solution files."""
     
     # Define paths
-    solutions_dir = "solutions/unformatted_solutions/results0730"
-    output_dir = "solutions/results0730"
+    solutions_dir = "solutions/unformatted_solutions/results0806"
+    output_dir = "solutions/results0806"
     data_200_dir = "data/homberger_200_customer_instances"
     data_400_dir = "data/homberger_400_customer_instances"
     
@@ -295,7 +295,8 @@ def main():
         
         # Determine corresponding data file
         base_name = solution_file.replace('.txt', '')
-        data_file = f"{base_name}.TXT"
+        # data_file = f"{base_name}.TXT"
+        data_file = f"{base_name}.txt"  # Use lowercase .txt to match the data files
         
         # Check in 200 customer instances first, then 800
         data_path = os.path.join(data_200_dir, data_file)

@@ -237,7 +237,7 @@ if __name__ == "__main__":
         base_name, ext = os.path.splitext(data_file)
         sol_filename = base_name + ".txt" # 直接指定小写 .txt
         
-        sol_path = os.path.join("solutions/results0730", sol_filename)
+        sol_path = os.path.join("solutions/results0806", sol_filename)
 
         if not os.path.exists(sol_path):
             print(f"结果文件不存在: {sol_path}")
