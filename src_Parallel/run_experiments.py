@@ -6,45 +6,45 @@ import shlex
 
 # 将所有要运行的命令存储在一个列表中
 commands = [
-    # """python main.py ../data/homberger_200_customer_instances/RC1_2_1.txt \
-    # --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    # --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    """python main.py ../data/homberger_200_customer_instances/RC1_2_1.txt \
+    --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
+    --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 2000""",
     
-    # """python main.py ../data/homberger_200_customer_instances/RC1_2_2.txt \
-    # --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    # --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    """python main.py ../data/homberger_200_customer_instances/RC1_2_2.txt \
+    --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
+    --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 2000""",
     
-    # """python main.py ../data/homberger_200_customer_instances/RC1_2_3.txt \
-    # --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    # --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    """python main.py ../data/homberger_200_customer_instances/RC1_2_3.txt \
+    --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
+    --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 2000""",
 
-    # """python main.py ../data/homberger_200_customer_instances/RC1_2_4.txt \
-    # --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    # --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    """python main.py ../data/homberger_200_customer_instances/RC1_2_4.txt \
+    --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
+    --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 2000""",
 
     """python main.py ../data/homberger_200_customer_instances/RC1_2_5.txt \
     --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 2000""",
 
     """python main.py ../data/homberger_400_customer_instances/RC1_4_1.txt \
     --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 2000""",
 
     """python main.py ../data/homberger_400_customer_instances/RC1_4_2.txt \
     --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 2000""",
 
     """python main.py ../data/homberger_400_customer_instances/RC1_4_3.txt \
     --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 2000""",
 
     """python main.py ../data/homberger_400_customer_instances/RC1_4_4.txt \
     --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 2000""",
 
     """python main.py ../data/homberger_400_customer_instances/RC1_4_5.txt \
     --parallel_mode --num_strategies 8 --sync_frequency 1500 --runtime 1800 \
-    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 3000 --seed 1""",
+    --runs 10 --num_subproblems 4 --decomposition_freq 1500 --subproblem_iters 2000""",
 ]
 
 # 依次执行每条命令
