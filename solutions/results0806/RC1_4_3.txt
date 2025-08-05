@@ -1,218 +1,218 @@
 Route for Vehicle 1:
-  Customers: 0 -> 184 -> 133 -> 154 -> 384 -> 261 -> 166 -> 191 -> 119 -> 105 -> 310 -> 314 -> 0
-  Distance: 234.56
-  Total Demand: 200
-  Total Time: 761.86
+  Customers: 0 -> 92 -> 115 -> 367 -> 267 -> 129 -> 272 -> 340 -> 396 -> 301 -> 343 -> 12 -> 0
+  Distance: 206.25
+  Total Demand: 199
+  Total Time: 610.34
 
 Route for Vehicle 2:
+  Customers: 0 -> 327 -> 33 -> 86 -> 124 -> 231 -> 300 -> 339 -> 394 -> 11 -> 15 -> 208 -> 0
+  Distance: 253.75
+  Total Demand: 199
+  Total Time: 675.57
+
+Route for Vehicle 3:
+  Customers: 0 -> 284 -> 277 -> 185 -> 268 -> 302 -> 341 -> 382 -> 174 -> 294 -> 137 -> 334 -> 319 -> 0
+  Distance: 219.11
+  Total Demand: 200
+  Total Time: 756.91
+
+Route for Vehicle 4:
+  Customers: 0 -> 184 -> 316 -> 243 -> 179 -> 173 -> 352 -> 285 -> 18 -> 126 -> 0
+  Distance: 146.04
+  Total Demand: 198
+  Total Time: 281.38
+
+Route for Vehicle 5:
+  Customers: 0 -> 348 -> 133 -> 154 -> 384 -> 261 -> 166 -> 191 -> 119 -> 105 -> 310 -> 314 -> 0
+  Distance: 235.21
+  Total Demand: 196
+  Total Time: 761.86
+
+Route for Vehicle 6:
   Customers: 0 -> 97 -> 266 -> 226 -> 163 -> 20 -> 26 -> 138 -> 123 -> 224 -> 0
   Distance: 281.24
   Total Demand: 195
   Total Time: 759.23
 
-Route for Vehicle 3:
-  Customers: 0 -> 85 -> 159 -> 168 -> 118 -> 65 -> 52 -> 170 -> 53 -> 180 -> 370 -> 207 -> 141 -> 77 -> 313 -> 0
-  Distance: 208.46
-  Total Demand: 200
-  Total Time: 759.45
-
-Route for Vehicle 4:
-  Customers: 0 -> 284 -> 196 -> 165 -> 90 -> 108 -> 47 -> 242 -> 344 -> 3 -> 360 -> 348 -> 127 -> 2 -> 0
-  Distance: 156.13
-  Total Demand: 199
-  Total Time: 746.09
-
-Route for Vehicle 5:
-  Customers: 0 -> 164 -> 316 -> 243 -> 179 -> 173 -> 352 -> 18 -> 126 -> 0
-  Distance: 142.69
-  Total Demand: 195
-  Total Time: 281.38
-
-Route for Vehicle 6:
-  Customers: 0 -> 92 -> 396 -> 340 -> 115 -> 367 -> 267 -> 327 -> 301 -> 308 -> 12 -> 0
-  Distance: 197.70
-  Total Demand: 198
-  Total Time: 610.34
-
 Route for Vehicle 7:
-  Customers: 0 -> 185 -> 302 -> 341 -> 394 -> 382 -> 174 -> 294 -> 11 -> 272 -> 129 -> 15 -> 208 -> 0
-  Distance: 234.95
-  Total Demand: 198
-  Total Time: 675.57
+  Customers: 0 -> 77 -> 2 -> 196 -> 165 -> 90 -> 108 -> 47 -> 242 -> 344 -> 3 -> 360 -> 127 -> 313 -> 0
+  Distance: 153.88
+  Total Demand: 199
+  Total Time: 745.82
 
 Route for Vehicle 8:
-  Customers: 0 -> 277 -> 285 -> 334 -> 33 -> 86 -> 124 -> 231 -> 300 -> 339 -> 137 -> 268 -> 319 -> 0
-  Distance: 241.74
-  Total Demand: 195
-  Total Time: 756.51
+  Customers: 0 -> 164 -> 159 -> 168 -> 118 -> 65 -> 52 -> 170 -> 53 -> 180 -> 370 -> 207 -> 141 -> 107 -> 85 -> 0
+  Distance: 212.00
+  Total Demand: 200
+  Total Time: 762.43
 
 Route for Vehicle 9:
-  Customers: 0 -> 136 -> 391 -> 288 -> 375 -> 355 -> 210 -> 39 -> 317 -> 219 -> 0
-  Distance: 158.04
-  Total Demand: 200
+  Customers: 0 -> 307 -> 330 -> 324 -> 151 -> 373 -> 56 -> 49 -> 276 -> 219 -> 0
+  Distance: 204.83
+  Total Demand: 196
   Total Time: 297.25
 
 Route for Vehicle 10:
-  Customers: 0 -> 307 -> 330 -> 324 -> 151 -> 373 -> 56 -> 374 -> 49 -> 276 -> 107 -> 0
-  Distance: 210.18
-  Total Demand: 199
-  Total Time: 715.03
+  Customers: 0 -> 204 -> 297 -> 380 -> 385 -> 5 -> 347 -> 91 -> 374 -> 0
+  Distance: 229.39
+  Total Demand: 191
+  Total Time: 755.33
 
 Route for Vehicle 11:
-  Customers: 0 -> 238 -> 297 -> 380 -> 385 -> 5 -> 347 -> 91 -> 172 -> 0
-  Distance: 226.63
-  Total Demand: 200
-  Total Time: 754.00
+  Customers: 0 -> 186 -> 58 -> 213 -> 161 -> 349 -> 318 -> 72 -> 140 -> 169 -> 361 -> 393 -> 0
+  Distance: 81.77
+  Total Demand: 199
+  Total Time: 191.77
 
 Route for Vehicle 12:
-  Customers: 0 -> 295 -> 114 -> 10 -> 239 -> 110 -> 345 -> 109 -> 271 -> 364 -> 1 -> 34 -> 204 -> 349 -> 0
-  Distance: 232.06
-  Total Demand: 198
-  Total Time: 428.23
+  Customers: 0 -> 288 -> 10 -> 239 -> 110 -> 345 -> 109 -> 271 -> 364 -> 1 -> 34 -> 317 -> 172 -> 0
+  Distance: 230.14
+  Total Demand: 197
+  Total Time: 427.98
 
 Route for Vehicle 13:
-  Customers: 0 -> 117 -> 400 -> 332 -> 190 -> 206 -> 235 -> 89 -> 4 -> 291 -> 111 -> 195 -> 279 -> 181 -> 177 -> 0
-  Distance: 239.68
+  Customers: 0 -> 245 -> 391 -> 295 -> 375 -> 355 -> 210 -> 39 -> 400 -> 117 -> 136 -> 0
+  Distance: 149.81
   Total Demand: 199
-  Total Time: 756.42
+  Total Time: 274.69
 
 Route for Vehicle 14:
-  Customers: 0 -> 121 -> 46 -> 55 -> 236 -> 247 -> 80 -> 16 -> 309 -> 244 -> 216 -> 227 -> 188 -> 0
-  Distance: 309.83
-  Total Demand: 199
-  Total Time: 735.59
+  Customers: 0 -> 332 -> 190 -> 206 -> 235 -> 89 -> 114 -> 4 -> 291 -> 111 -> 195 -> 279 -> 181 -> 177 -> 0
+  Distance: 236.05
+  Total Demand: 200
+  Total Time: 756.42
 
 Route for Vehicle 15:
-  Customers: 0 -> 252 -> 106 -> 128 -> 386 -> 353 -> 43 -> 205 -> 189 -> 0
-  Distance: 240.46
+  Customers: 0 -> 75 -> 211 -> 238 -> 217 -> 369 -> 178 -> 120 -> 222 -> 270 -> 150 -> 383 -> 0
+  Distance: 147.55
   Total Demand: 198
-  Total Time: 748.91
-
-Route for Vehicle 16:
-  Customers: 0 -> 357 -> 35 -> 398 -> 359 -> 103 -> 8 -> 376 -> 28 -> 182 -> 331 -> 273 -> 0
-  Distance: 164.07
-  Total Demand: 194
-  Total Time: 644.61
-
-Route for Vehicle 17:
-  Customers: 0 -> 58 -> 75 -> 211 -> 161 -> 318 -> 72 -> 140 -> 169 -> 361 -> 393 -> 0
-  Distance: 80.56
-  Total Demand: 195
-  Total Time: 180.56
-
-Route for Vehicle 18:
-  Customers: 0 -> 186 -> 213 -> 245 -> 217 -> 369 -> 178 -> 120 -> 222 -> 270 -> 150 -> 383 -> 0
-  Distance: 148.12
-  Total Demand: 197
   Total Time: 676.31
 
-Route for Vehicle 19:
-  Customers: 0 -> 228 -> 147 -> 68 -> 198 -> 292 -> 29 -> 338 -> 64 -> 229 -> 220 -> 183 -> 100 -> 0
-  Distance: 292.41
+Route for Vehicle 16:
+  Customers: 0 -> 46 -> 55 -> 236 -> 247 -> 80 -> 16 -> 309 -> 244 -> 216 -> 227 -> 188 -> 121 -> 0
+  Distance: 309.18
+  Total Demand: 199
+  Total Time: 745.59
+
+Route for Vehicle 17:
+  Customers: 0 -> 250 -> 252 -> 106 -> 128 -> 386 -> 353 -> 43 -> 205 -> 0
+  Distance: 237.72
   Total Demand: 200
-  Total Time: 747.46
+  Total Time: 735.61
+
+Route for Vehicle 18:
+  Customers: 0 -> 357 -> 35 -> 398 -> 359 -> 103 -> 8 -> 376 -> 28 -> 36 -> 182 -> 331 -> 273 -> 0
+  Distance: 164.84
+  Total Demand: 198
+  Total Time: 644.61
+
+Route for Vehicle 19:
+  Customers: 0 -> 95 -> 189 -> 67 -> 50 -> 149 -> 31 -> 258 -> 366 -> 101 -> 237 -> 158 -> 290 -> 0
+  Distance: 202.10
+  Total Demand: 200
+  Total Time: 322.10
 
 Route for Vehicle 20:
-  Customers: 0 -> 156 -> 113 -> 263 -> 71 -> 79 -> 122 -> 51 -> 27 -> 303 -> 139 -> 94 -> 0
-  Distance: 225.08
-  Total Demand: 200
-  Total Time: 757.46
-
-Route for Vehicle 21:
-  Customers: 0 -> 337 -> 379 -> 160 -> 388 -> 312 -> 257 -> 354 -> 19 -> 146 -> 0
-  Distance: 215.58
-  Total Demand: 200
-  Total Time: 511.77
-
-Route for Vehicle 22:
-  Customers: 0 -> 328 -> 298 -> 96 -> 265 -> 342 -> 230 -> 42 -> 61 -> 99 -> 343 -> 0
-  Distance: 198.29
-  Total Demand: 200
-  Total Time: 676.65
-
-Route for Vehicle 23:
-  Customers: 0 -> 144 -> 256 -> 296 -> 143 -> 76 -> 32 -> 214 -> 363 -> 194 -> 23 -> 93 -> 0
-  Distance: 106.05
-  Total Demand: 196
-  Total Time: 745.43
-
-Route for Vehicle 24:
-  Customers: 0 -> 201 -> 262 -> 104 -> 41 -> 333 -> 59 -> 322 -> 135 -> 315 -> 202 -> 283 -> 0
-  Distance: 186.52
-  Total Demand: 195
-  Total Time: 567.30
-
-Route for Vehicle 25:
-  Customers: 0 -> 232 -> 78 -> 40 -> 372 -> 392 -> 148 -> 253 -> 275 -> 251 -> 62 -> 69 -> 167 -> 358 -> 0
-  Distance: 211.97
-  Total Demand: 198
-  Total Time: 452.58
-
-Route for Vehicle 26:
-  Customers: 0 -> 278 -> 9 -> 299 -> 335 -> 371 -> 200 -> 397 -> 6 -> 7 -> 130 -> 209 -> 38 -> 0
-  Distance: 254.70
-  Total Demand: 200
-  Total Time: 735.68
-
-Route for Vehicle 27:
-  Customers: 0 -> 381 -> 286 -> 57 -> 246 -> 356 -> 157 -> 234 -> 350 -> 289 -> 116 -> 389 -> 14 -> 0
-  Distance: 248.38
-  Total Demand: 199
-  Total Time: 761.12
-
-Route for Vehicle 28:
-  Customers: 0 -> 162 -> 87 -> 82 -> 152 -> 305 -> 280 -> 225 -> 321 -> 45 -> 241 -> 17 -> 0
-  Distance: 245.75
-  Total Demand: 200
-  Total Time: 632.83
-
-Route for Vehicle 29:
-  Customers: 0 -> 250 -> 125 -> 282 -> 259 -> 187 -> 304 -> 63 -> 306 -> 142 -> 203 -> 0
-  Distance: 163.65
-  Total Demand: 196
-  Total Time: 694.63
-
-Route for Vehicle 30:
-  Customers: 0 -> 36 -> 95 -> 67 -> 50 -> 149 -> 31 -> 258 -> 366 -> 101 -> 237 -> 158 -> 290 -> 131 -> 0
-  Distance: 200.73
-  Total Demand: 194
-  Total Time: 615.44
-
-Route for Vehicle 31:
   Customers: 0 -> 269 -> 287 -> 134 -> 30 -> 260 -> 320 -> 362 -> 233 -> 281 -> 24 -> 264 -> 199 -> 0
   Distance: 223.32
   Total Demand: 200
   Total Time: 755.32
 
-Route for Vehicle 32:
-  Customers: 0 -> 323 -> 346 -> 377 -> 145 -> 390 -> 192 -> 351 -> 44 -> 0
-  Distance: 213.23
+Route for Vehicle 21:
+  Customers: 0 -> 259 -> 323 -> 346 -> 377 -> 145 -> 304 -> 63 -> 306 -> 142 -> 203 -> 131 -> 0
+  Distance: 188.01
   Total Demand: 200
-  Total Time: 755.41
+  Total Time: 615.44
 
-Route for Vehicle 33:
-  Customers: 0 -> 255 -> 25 -> 73 -> 132 -> 326 -> 249 -> 112 -> 197 -> 74 -> 387 -> 274 -> 223 -> 176 -> 378 -> 13 -> 0
+Route for Vehicle 22:
+  Customers: 0 -> 125 -> 282 -> 187 -> 44 -> 390 -> 132 -> 192 -> 351 -> 25 -> 0
+  Distance: 206.08
+  Total Demand: 200
+  Total Time: 760.63
+
+Route for Vehicle 23:
+  Customers: 0 -> 155 -> 255 -> 73 -> 326 -> 249 -> 112 -> 197 -> 74 -> 387 -> 223 -> 176 -> 13 -> 98 -> 0
+  Distance: 243.41
+  Total Demand: 199
+  Total Time: 763.64
+
+Route for Vehicle 24:
+  Customers: 0 -> 368 -> 274 -> 395 -> 54 -> 88 -> 248 -> 365 -> 83 -> 240 -> 81 -> 66 -> 60 -> 0
+  Distance: 255.05
+  Total Demand: 199
+  Total Time: 601.77
+
+Route for Vehicle 25:
+  Customers: 0 -> 378 -> 218 -> 171 -> 21 -> 293 -> 215 -> 102 -> 48 -> 336 -> 175 -> 70 -> 37 -> 212 -> 22 -> 0
+  Distance: 321.73
+  Total Demand: 199
+  Total Time: 653.10
+
+Route for Vehicle 26:
+  Customers: 0 -> 329 -> 311 -> 254 -> 221 -> 325 -> 84 -> 167 -> 358 -> 153 -> 14 -> 0
+  Distance: 239.34
+  Total Demand: 198
+  Total Time: 735.64
+
+Route for Vehicle 27:
+  Customers: 0 -> 232 -> 40 -> 372 -> 392 -> 253 -> 275 -> 251 -> 62 -> 148 -> 130 -> 209 -> 38 -> 399 -> 193 -> 0
+  Distance: 230.84
+  Total Demand: 199
+  Total Time: 755.92
+
+Route for Vehicle 28:
+  Customers: 0 -> 194 -> 299 -> 335 -> 371 -> 200 -> 397 -> 6 -> 7 -> 78 -> 69 -> 17 -> 0
+  Distance: 235.84
+  Total Demand: 200
+  Total Time: 632.83
+
+Route for Vehicle 29:
+  Customers: 0 -> 201 -> 262 -> 104 -> 41 -> 333 -> 59 -> 322 -> 135 -> 241 -> 283 -> 0
+  Distance: 199.57
+  Total Demand: 196
+  Total Time: 613.35
+
+Route for Vehicle 30:
+  Customers: 0 -> 278 -> 87 -> 82 -> 152 -> 286 -> 57 -> 246 -> 356 -> 305 -> 289 -> 116 -> 389 -> 0
   Distance: 235.66
   Total Demand: 199
-  Total Time: 756.84
+  Total Time: 746.42
+
+Route for Vehicle 31:
+  Customers: 0 -> 328 -> 381 -> 321 -> 225 -> 280 -> 64 -> 229 -> 220 -> 183 -> 100 -> 94 -> 0
+  Distance: 232.71
+  Total Demand: 200
+  Total Time: 761.15
+
+Route for Vehicle 32:
+  Customers: 0 -> 144 -> 256 -> 296 -> 143 -> 76 -> 32 -> 363 -> 214 -> 23 -> 93 -> 0
+  Distance: 79.81
+  Total Demand: 180
+  Total Time: 745.43
+
+Route for Vehicle 33:
+  Customers: 0 -> 9 -> 162 -> 350 -> 234 -> 157 -> 338 -> 29 -> 122 -> 292 -> 303 -> 146 -> 228 -> 0
+  Distance: 296.24
+  Total Demand: 200
+  Total Time: 755.62
 
 Route for Vehicle 34:
-  Customers: 0 -> 155 -> 218 -> 171 -> 21 -> 293 -> 215 -> 102 -> 175 -> 48 -> 336 -> 70 -> 37 -> 60 -> 22 -> 0
-  Distance: 326.22
-  Total Demand: 194
-  Total Time: 640.08
+  Customers: 0 -> 298 -> 96 -> 113 -> 265 -> 342 -> 230 -> 42 -> 68 -> 156 -> 45 -> 315 -> 202 -> 0
+  Distance: 199.89
+  Total Demand: 200
+  Total Time: 568.91
 
 Route for Vehicle 35:
-  Customers: 0 -> 368 -> 395 -> 54 -> 88 -> 248 -> 365 -> 83 -> 240 -> 81 -> 66 -> 98 -> 0
-  Distance: 253.57
-  Total Demand: 200
-  Total Time: 520.31
+  Customers: 0 -> 147 -> 139 -> 263 -> 71 -> 79 -> 51 -> 27 -> 198 -> 354 -> 19 -> 61 -> 0
+  Distance: 229.75
+  Total Demand: 199
+  Total Time: 401.08
 
 Route for Vehicle 36:
-  Customers: 0 -> 329 -> 212 -> 311 -> 254 -> 221 -> 399 -> 325 -> 153 -> 84 -> 193 -> 0
-  Distance: 227.94
-  Total Demand: 197
-  Total Time: 586.20
+  Customers: 0 -> 308 -> 337 -> 379 -> 160 -> 312 -> 257 -> 388 -> 99 -> 0
+  Distance: 208.61
+  Total Demand: 196
+  Total Time: 665.27
 
-Total Distance for All Vehicles: 7736.15
-Total Time for All Vehicles: 23199.85
+Total Distance for All Vehicles: 7726.72
+Total Time for All Vehicles: 22712.72
