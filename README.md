@@ -78,20 +78,21 @@ Team: Route Seekers
 
   | Instance | Vehicles | Distance  | Duration  | Time |
   | :------: | :-------------: | :-------------: | :-------------: | :---------: |
-  | rc1_2_1  |               |          |         |    1800     |
-  | rc1_2_2  |               |          |         |    1800     |
-  | rc1_2_3  |               |          |         |    1800     |
-  | rc1_2_4  |               |          |         |    1800     |
-  | rc1_2_5  |               |          |         |    1800     |
-  | rc1_4_1  |               |          |         |    1800     |
-  | rc1_4_2  |               |          |         |    1800     |
-  | rc1_4_3  |               |          |         |    1800     |
-  | rc1_4_4  |               |          |         |    1800     |
-  | rc1_4_5  |               |          |         |    1800     |
+  | rc1_2_1  |       18        |          |         |    1800     |
+  | rc1_2_2  |       18        |          |         |    1800     |
+  | rc1_2_3  |       18        |          |         |    1800     |
+  | rc1_2_4  |       18        |          |         |    1800     |
+  | rc1_2_5  |       19        |          |         |    1800     |
+  | rc1_4_1  |       37        |     8943.73     |         |    1800     |
+  | rc1_4_2  |       36        |     8306.65     |         |    1800     |
+  | rc1_4_3  |       36        |     8180.16     |         |    1800     |
+  | rc1_4_4  |       36        |     7872.08     |         |    1800     |
+  | rc1_4_5  |       36        |     8690.16     |         |    1800     |
 
 ## Environments
 
-- Operating System: Windows 11（本地测试），Linux（主办方服务器）
+- Operating System: Windows 11（本地测试），Ubuntu 20.04.6 LTS（主办方服务器）
+- CPU：AMD Ryzen 9 7950X（本地测试），AMD EPYC 9754（主办方服务器）
 - 8核 + 256G 的配置
 - Python版本：Python 3.13.5（安装依赖库前请确认你的python版本！！！否则无法安装相应依赖）`conda create -n VRPTW python=3.13.5` 然后 `conda activate VRPTW`
 - 依赖库安装：`pip install -r requirements.txt`
@@ -100,25 +101,43 @@ Team: Route Seekers
 
 ## How to Start?
 
-`python ./src/main.py <Instance file path> --runtime <Maxtime> --runs <Maxrun> --num_subproblems <Numsubproblem>`
+- 参数说明
 
-Example:
+  - 问题相关：`<Instance file path>` `--runtime <Maxtime>` `--runs <Maxrun>`
+  - 并行多策略相关：`--num_subproblems <Numsubproblem>` `--decomposition_freq <Decompositionfrequency>` `--subproblem_iters <Subproblemiterations>`
+  - 子问题分解相关：`--parallel_mode` `--num_strategies <Numstrategies>` `--sync_frequency <Syncfrequency>`
 
-`python ./src/main.py data/homberger_200_customer_instances/C1_2_1.TXT --runtime 1800 --runs 10 --num_subproblems 2`
+- 两种求解器
 
-`python ./src/main.py data/homberger_800_customer_instances/C1_8_1.TXT --runtime 1800 --runs 10 --num_subproblems 8`
+  - 传统单策略子问题分解HGS求解器
+
+    `python ./src/main.py <Instance file path> --runtime <Maxtime> --runs <Maxrun> --num_subproblems <Numsubproblem> --decomposition_freq <Decompositionfrequency> --subproblem_iters <Subproblemiterations>`
+
+  - 并行多策略子问题分解HGS求解器
+
+    `python ./src_Parallel/main.py <Instance file path> --runtime <Maxtime> --runs <Maxrun> --parallel_mode --num_strategies <Numstrategies> --sync_frequency <Syncfrequency> --num_subproblems <Numsubproblem> --subproblem_iters <Subproblemiterations>`
+
+- Example:
+
+  `python ./src/main.py data/homberger_200_customer_instances/C1_2_1.TXT --runtime 1800 --runs 10 --num_subproblems 2 --decomposition_freq 1500 --subproblem_iters 2000`
+
+  `python ./src/main.py data/homberger_800_customer_instances/C1_8_1.TXT --runtime 1800 --runs 10 --num_subproblems 8 --decomposition_freq 1500 --subproblem_iters 2000`
+
+  `python ./src_Parallel/main.py data/homberger_200_customer_instances/RC1_2_1.txt --runtime 1800 --runs 10 --parallel_mode --num_strategies 8 --sync_frequency 1500 --num_subproblems 2 --subproblem_iters 2000`
+
+  `python ./src_Parallel/main.py data/homberger_400_customer_instances/RC1_4_1.txt --runtime 1800 --runs 10 --parallel_mode --num_strategies 8 --sync_frequency 1500 --num_subproblems 4 --subproblem_iters 2000`
 
 ## References
 
-BKS:
+- Best known solutions for VRPTW in publications
 
-- `[DOCS 2025 VRPTW track]` fleet minimization in priority, and then route length minimization: [https://www.sintef.no/projectweb/top/vrptw/200-customers/](https://www.sintef.no/projectweb/top/vrptw/200-customers/)
+  - `[DOCS 2025 VRPTW track]` fleet minimization in priority, and then route length minimization: [https://www.sintef.no/projectweb/top/vrptw/200-customers/](https://www.sintef.no/projectweb/top/vrptw/200-customers/)
 
-- `[DIMACS 2022 VRPTW track]` minimizing distances, not the number of vehicles used: [http://vrp.galgos.inf.puc-rio.br/index.php/en/](http://vrp.galgos.inf.puc-rio.br/index.php/en/) (with optimality provided)
+  - `[DIMACS 2022 VRPTW track]` minimizing distances, not the number of vehicles used: [http://vrp.galgos.inf.puc-rio.br/index.php/en/](http://vrp.galgos.inf.puc-rio.br/index.php/en/) (with optimality provided)
 
-PyVRP:
+- PyVRP: provides a high-performance implementation of the hybrid genetic search (HGS) algorithm
 
-- `[PyVRP v0.11.3]` Open-source, state-of-the-art vehicle routing problem solver in an easy-to-use Python package: [https://github.com/PyVRP/PyVRP](https://github.com/PyVRP/PyVRP)
+  - `[PyVRP v0.11.3]` Open-source, state-of-the-art vehicle routing problem solver in an easy-to-use Python package: [https://github.com/PyVRP/PyVRP](https://github.com/PyVRP/PyVRP)
 
 
 
@@ -127,6 +146,6 @@ PyVRP:
 - [x] 计算精度：坐标间的欧几里得距离应该保留几位小数（Ours默认一位小数）？目前表格Distance比较没有意义。根据VRPTW.md文件示例输出，Distance**默认是一位截断小数**，主办方在微信群 [2025/07/08] 通知是**直接一位截断小数**, [2025/07/16] 通知是**初赛一位小数或者两位小数皆可，复赛会注意**， [2025/07/29] 通知是**复赛四舍五入两位小数**
 - [x] 读入文件处理：目前是粗糙地将Solomon格式转化为CVRPLIB格式读入，但是这种转换默认每个客户的SERVICE_TIME相同。后面**要做好更加规范严格的数据读入**。解决方案：重构PyVRP库里的read.py，使之支持读入Solomon格式Instance。
 - [x] 优化目标修改：目前是直接最小化Distance，因此：我要修改使得优先最小化车辆数，再最小化Distance。解决方案：将fixed_costs设置为10000
-- [x] 创新改进：分解策略。具体来说最大程度利用并行，每10s同步一次然后把最优解同步，然后连续5次同步没有改进的话就分解改进，然后把最优解插入 masterproblem parallel computing with 8 CPU cores + barycenter clustering decomposition + subproblem parallel computing with 8 CPU cores 
-- [x] 主办方服务器上测试算法
+- [x] 创新改进：（1）并行多策略（2）子问题分解。具体来说最大程度利用并行，每10s同步一次然后把最优解同步，连续5次同步没有改进的话就分解改进，然后把最优解插入 masterproblem parallel multi-strategies computing with 8 CPU cores + barycenter clustering decomposition + subproblem parallel computing with 2/4/8 CPU cores 
+- [x] 主办方服务器上测试算法：复赛提交的测试结果均在主办方服务器获得，随机种子seed设置为默认值42
 - [x] 复赛规则修改：强制要求出发时间为0，使用PyVRP计算Duration时会从depot延迟出发。解决方案：获得的解使用`convert_solutions.py`转成主办方要求的路径格式，并重新计算Distance和Duration
