@@ -74,7 +74,7 @@ Team: Route Seekers
   | rc1_4_4  |       36        |     7616.51     |    24949.50     |    1800     | $-3.25%$ |
   | rc1_4_5  |       36        |     8587.81     |    20118.99     |    1800     | $-1.18%$ |
 
-  Note: $Gap = \frac{Distance_{Ours}-Distance_{HGS}}{Distance_{HGS}} \times 100 %$ 
+  Note: $Gap = \frac{Distance_{Ours}-Distance_{HGS}}{Distance_{HGS}} \times 100$% 
 
   - **HGS求解器（Baseline）** 10次运行最好的结果：
 
