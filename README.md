@@ -46,7 +46,7 @@ Team: Route Seekers
 
   - **并行多策略子问题分解HGS求解器** 10次运行最好的结果：
 
-  | Instance | Vehicles (Ours) | Distance (Ours) | Duration (Ours) | Time (Ours) | Gap |
+  | Instance | Vehicles (Ours) | Distance (Ours) | Duration (Ours) | Time (Ours) | Gap (%) |
   | :------: | :-------------: | :-------------: | :-------------: | :---------: | :---------: |
   | rc1_2_1  |       18        |    3790.34      |     8402.44     |    1800     | $+0.13%$ |
   | rc1_2_2  |       18        |    $\color{red}{3324.27}$      |     8235.13     |    1800     | $-1.28%$ |
@@ -61,7 +61,7 @@ Team: Route Seekers
   
   - **传统单策略子问题分解HGS求解器** 10次运行最好的结果：
 
-  | Instance | Vehicles (Ours) | Distance (Ours) | Duration (Ours) | Time (Ours) | Gap |
+  | Instance | Vehicles (Ours) | Distance (Ours) | Duration (Ours) | Time (Ours) | Gap (%) |
   | :------: | :-------------: | :-------------: | :-------------: | :---------: | :---------: |
   | rc1_2_1  |       18        |     $\color{red}{3789.88}$     |     8417.36     |    1800     | $+0.12%$ |
   | rc1_2_2  |       18        |     $\color{red}{3324.27}$     |     8235.13     |    1800     | $-1.28%$ |
